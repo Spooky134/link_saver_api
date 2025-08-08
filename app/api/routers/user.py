@@ -1,0 +1,1 @@
+# current_user: User = Depends(get_current_user) проверка на пользователя в эндпоинтах

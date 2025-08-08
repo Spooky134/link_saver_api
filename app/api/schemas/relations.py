@@ -1,5 +1,5 @@
 from pydantic import BaseModel, HttpUrl
-from app.schemas.link import LinkType
+from app.api.schemas.link import LinkType
 
 
 

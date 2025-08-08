@@ -1,0 +1,37 @@
+[
+    {
+        "title": "Как работает JS: WebRTC и механизмы P2P-коммуникаций",
+        "description": "[Советуем почитать] Другие 19 частей цикла Часть 1: Обзор движка, механизмов времени выполнения, стека вызовов Часть 2: О внутреннем устройстве V8 и оптимизации кода Часть 3: Управление памятью,...",
+        "url": "https://habr.com/ru/companies/ruvds/articles/416821/",
+        "image": "https://habr.com/share/publication/416821/486907090313c5170a87085a56d6cdfc/",
+        "link_type": "article"
+    },
+    {
+        "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and around the world",
+        "description": "Visit BBC News for the latest news, breaking news, video, audio and analysis. BBC News provides trusted World, U.S. and U.K. news as well as local and regional perspectives. Also entertainment, climate, business, science, technology and health news.",
+        "url": "https://www.bbc.com/news",
+        "image": "",
+        "link_type": "website"
+    },
+    {
+        "title": "ScHoolboy Q - Hell Of A Night (Official Music Video)",
+        "description": "Music video by ScHoolboy Q performing Hell Of A Night. (C) 2014 Interscope Records",
+        "url": "https://www.youtube.com/watch?v=lBm9_pRj2UA&ab_channel=ScHoolBoyQVEVO",
+        "image": "https://i.ytimg.com/vi/lBm9_pRj2UA/maxresdefault.jpg",
+        "link_type": "video"
+    },
+    {
+        "title": "Alice's Adventures in Wonderland by Lewis Carroll",
+        "description": "Free kindle book and epub digitized and proofread by volunteers.",
+        "url": "https://www.gutenberg.org/ebooks/11",
+        "image": "https://www.gutenberg.org/cache/epub/11/pg11.cover.medium.jpg",
+        "link_type": "book"
+    },
+    {
+        "title": "Save Your Tears",
+        "description": "The Weeknd · After Hours · Song · 2020",
+        "url": "https://open.spotify.com/track/5QO79kh1waicV47BqGRL3g",
+        "image": "https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36",
+        "link_type": "music"
+    }
+]

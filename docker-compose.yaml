@@ -1,26 +1,30 @@
-version: '3'
-services:
-  api:
-    build: ./linkStorageAPI
+version: '3.8'
 
-    restart: always
-    
+services:
+  web:
+    build: .
     ports:
       - "8000:8000"
-
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=mysql+pymysql://user:password@db:3306/mydatabase
     depends_on:
-     - db
+      - db
+    restart: unless-stopped
 
   db:
-    image: mysql
-
-    restart: always
-
-    environment:
-      MYSQL_DATABASE: 'mydatabase'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
-
+    image: mysql:8.0
     ports:
       - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql_data:

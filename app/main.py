@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from app.routers import link, collection
+from app.api.routers import link, collection
 from fastapi import FastAPI, Depends, HTTPException
-from app.db.database import Base, engine
+from app.config.database import Base, engine
 import asyncio
 from contextlib import asynccontextmanager
 
@@ -21,13 +21,15 @@ app = FastAPI(title="Link saver API", lifespan=lifespan)
 
 
 
-app.include_router(link.router, prefix="/links", tags=["links"])
-app.include_router(collection.router, prefix="/collections", tags=["collections"])
+app.include_router(link.router, prefix="/v1")
+app.include_router(collection.router, prefix="/v1")
 
 
-@app.get("/", summary="Root endpoint")
+@app.get("/v1", summary="Root endpoint")
 def root():
     return {
+        "service": "Link storage",
+        "version": "1.0.0",
         "message": "Hello there",
         "endpoints": {
             "links": "/links",

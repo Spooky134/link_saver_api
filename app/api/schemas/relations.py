@@ -1,6 +1,5 @@
 from pydantic import BaseModel, HttpUrl
-from app.api.schemas.link import LinkType
-
+from .link import LinkType
 
 
 class LinkInCollection(BaseModel):

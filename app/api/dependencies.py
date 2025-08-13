@@ -1,7 +1,7 @@
 from typing import Type, TypeVar
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.config.database import get_db
+from config.database import get_db
 
 T = TypeVar('T')
 

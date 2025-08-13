@@ -1,9 +1,8 @@
 from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
 from typing import Optional
-from app.api.schemas.relations import LinkInCollection
-from app.api.schemas.enums import LinkType
-from app.api.schemas.decorators import validate_ids_field
+from .relations import LinkInCollection
+from .decorators import validate_ids_field
 
 
 @validate_ids_field("link_ids")

@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field, HttpUrl, field_validator, field_serializer
 from datetime import datetime
 from typing import Optional
-from app.api.schemas.enums import LinkType
-from app.api.schemas.relations import CollectionInLink
-from app.api.schemas.decorators import validate_ids_field
+from .enums import LinkType
+from .relations import CollectionInLink
+from .decorators import validate_ids_field
 
 
 class LinkCreate(BaseModel):

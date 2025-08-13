@@ -3,9 +3,9 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import exists, select, update, delete
 from sqlalchemy.orm import selectinload
-from app.db.models.link_model import Link
-from app.db.models.collection_model import Collection
-from app.api.schemas.enums import LinkType
+from db.models.link_model import Link
+from db.models.collection_model import Collection
+from api.schemas.enums import LinkType
 
 class LinkRepository:
     def __init__(self, session: AsyncSession):

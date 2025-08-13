@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Table, ForeignKey
-from app.config.database import Base
+from config.database import Base
 
 
 link_collection = Table(

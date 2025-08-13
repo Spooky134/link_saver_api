@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from app.api.routers import link, collection
+from api.routers import link, collection
 from fastapi import FastAPI, Depends, HTTPException
-from app.config.database import Base, engine
-import asyncio
+from sqlalchemy.ext.asyncio import AsyncSession
+# import asyncio
 from contextlib import asynccontextmanager
+from config.database import Base, engine, get_db
+from config.project_config import settings
 
  
 @asynccontextmanager
@@ -17,7 +19,7 @@ async def lifespan(app: FastAPI):
     # await engine.dispose()
 
 
-app = FastAPI(title="Link saver API", lifespan=lifespan)
+app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan)
 
 
 
@@ -36,3 +38,9 @@ def root():
             "collections": "/collections"
         }
     }
+
+
+@app.get("/test-db")
+async def test_db(db: AsyncSession = Depends(get_db)):
+    result = await db.execute("SELECT 1")
+    return {"status": "OK", "data": result.scalar()}

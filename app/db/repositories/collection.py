@@ -3,10 +3,10 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import exists, func, select, update, delete
 from sqlalchemy.orm import selectinload
-from app.db.models.link_model import Link
-from app.db.models.collection_model import Collection
-from app.api.schemas.enums import LinkType
-from app.db.models.link_collection_model import link_collection
+from db.models.link_model import Link
+from db.models.collection_model import Collection
+from api.schemas.enums import LinkType
+from db.models.link_collection_model import link_collection
 
 
 #TODO collection.time_update = datetime.now() везде где изменения

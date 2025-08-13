@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, Query
 from typing import Optional
-from app.api.schemas.link import LinkCreate, LinkResponse, LinkUpdate
+from api.schemas.link import LinkCreate, LinkResponse, LinkUpdate
 from fastapi import Depends
-from app.services.link_service import LinkService
-from app.api.dependencies import service_factory
-from app.exceptions.exceptions import ValidationError, NotFoundError
+from services.link_service import LinkService
+from api.dependencies import service_factory
+from exceptions.exceptions import ValidationError, NotFoundError
 
 
 router = APIRouter(prefix="/links", tags=["links"])
@@ -58,10 +58,6 @@ async def create_link(link_create: LinkCreate,
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-
-
-#TODO откорректировать сервисы и репозитории
 
 
 # Для ссылок:

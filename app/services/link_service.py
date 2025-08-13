@@ -1,16 +1,15 @@
 from datetime import datetime
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.api.schemas.enums import LinkType
-from app.db.repositories.link import LinkRepository
-from app.db.repositories.collection import CollectionRepository
-from app.db.models.link_model import Link
-from app.api.schemas.link import LinkCreate, LinkUpdate
+from api.schemas.enums import LinkType
+from db.repositories.link import LinkRepository
+from db.repositories.collection import CollectionRepository
+from db.models.link_model import Link
+from api.schemas.link import LinkCreate, LinkUpdate
 # from ..exceptions import NotFoundError, ValidationError
-from app.utils.async_link_parser import AsyncLinkInfoParser, HEADERS
-from pydantic import BaseModel, Field, HttpUrl, field_validator
-from app.exceptions.exceptions import ValidationError, NotFoundError
-from asyncio import to_thread
+from utils.async_link_parser import AsyncLinkInfoParser
+from utils.config import HEADERS
+from exceptions.exceptions import ValidationError, NotFoundError
 
 #TODO оптимизиировать количество методов
 class LinkService:

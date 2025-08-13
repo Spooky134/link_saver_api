@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status
-from app.api.schemas.collection import CollectionResponse, CollectionCreate, CollectionUpdate, CollectionUpdateFull, CollectionLinkRequest
+from api.schemas.collection import CollectionResponse, CollectionCreate, CollectionUpdate, CollectionUpdateFull, CollectionLinkRequest
 from fastapi import Depends, Query
-from app.api.schemas.link import LinkResponse
-from app.exceptions.exceptions import ValidationError, NotFoundError
-from app.services.collection_service import CollectionService
-from app.api.dependencies import service_factory
+from api.schemas.link import LinkResponse
+from exceptions.exceptions import ValidationError, NotFoundError
+from services.collection_service import CollectionService
+from api.dependencies import service_factory
 
 
 router = APIRouter(prefix="/collections", tags=["collections"])

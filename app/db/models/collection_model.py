@@ -1,8 +1,8 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueConstraint
-from app.config.database import Base
+from config.database import Base
 from sqlalchemy.orm import relationship
-from app.db.models.link_collection_model import link_collection
+from db.models.link_collection_model import link_collection
 
 
 class Collection(Base):

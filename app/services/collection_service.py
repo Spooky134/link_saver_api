@@ -1,14 +1,14 @@
 from datetime import datetime
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.api.schemas.enums import LinkType
-from app.db.repositories.link import LinkRepository
-from app.db.repositories.collection import CollectionRepository
-from app.db.models.link_model import Link
-from app.db.models.collection_model import Collection
-from app.api.schemas.collection import CollectionCreate, CollectionUpdate, CollectionUpdateBase, CollectionLinkRequest
+from api.schemas.enums import LinkType
+from db.repositories.link import LinkRepository
+from db.repositories.collection import CollectionRepository
+from db.models.link_model import Link
+from db.models.collection_model import Collection
+from api.schemas.collection import CollectionCreate, CollectionUpdate, CollectionUpdateBase, CollectionLinkRequest
 # from ..exceptions import NotFoundError, ValidationError
-from app.exceptions.exceptions import ValidationError, NotFoundError
+from exceptions.exceptions import ValidationError, NotFoundError
 
 
 #TODO оптимизиировать количество методов

@@ -3,14 +3,7 @@ from bs4 import BeautifulSoup
 from typing import Optional, Dict
 import asyncio
 import json
-
-#TODO перенести в файлы конфигураций
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Referer": "https://www.google.com/",
-}
+from .config import HEADERS
 
 
 # TODO безопасность
@@ -19,7 +12,7 @@ class AsyncLinkInfoParser:
     DEFAULT_LINK_TYPE = "website"
 
     def __init__(self, headers: Optional[Dict] = None, timeout: int = 10) -> None:
-        self._headers = headers or HEADERS
+        self._headers = headers
         self._timeout = aiohttp.ClientTimeout(total=timeout)
         self._soup = None
         self._og_data = None

@@ -9,10 +9,3 @@ def service_factory(service_class: Type[T]) -> T:
     def _factory(db: AsyncSession = Depends(get_db_session)) -> T:
         return service_class(db)
     return _factory
-
-# from app.services.link_service import LinkService
-
-# def service_factory(service_class: type[LinkService]) -> LinkService:
-#     async def _factory(db: AsyncSession = Depends(get_db)) -> LinkService:
-#         return service_class(db)
-#     return _factory

@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter, HTTPException, status, Query
 
-router = APIRouter()
+router = APIRouter(tags=["root"])
 
 @router.get("/", summary="Root endpoint")
 def root():

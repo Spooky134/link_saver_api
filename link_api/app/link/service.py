@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.link.enum import LinkType
 from app.link.repository import LinkRepository
 from app.collection.repository import CollectionRepository
-from app.link.model import Link
+from app.link.model import LinkModel
 from app.link.schema import LinkCreate, LinkUpdate
 # from ..exceptions import NotFoundError, ValidationError
 from app.link.utils.async_link_parser import AsyncLinkInfoParser, HEADERS
@@ -18,7 +18,7 @@ class LinkService:
         self.collection_repo = CollectionRepository(db)
 
     # TODO не использовать словарь
-    async def create_link(self, link_data: LinkCreate) -> Link:
+    async def create_link(self, link_data: LinkCreate) -> LinkModel:
 
         if await self.link_repo.exists_by_url(str(link_data.url)):
             raise ValidationError(detail="Link already exists")
@@ -36,7 +36,7 @@ class LinkService:
 
         return await self.link_repo.create(link_data=new_link)
     
-    async def update_link(self, link_id: int, data: LinkUpdate) -> Link:
+    async def update_link(self, link_id: int, data: LinkUpdate) -> LinkModel:
         if not await self.link_repo.exists_by_id(link_id):
             raise NotFoundError(detail="Link not found")
         
@@ -64,7 +64,7 @@ class LinkService:
 
         await self.link_repo.delete(link_id=link_id)
 
-    async def get_link(self, link_id: int) -> Link:
+    async def get_link(self, link_id: int) -> LinkModel:
         link = await self.link_repo.get(link_id=link_id)
 
         if not link:
@@ -77,7 +77,7 @@ class LinkService:
 
         return links
     
-    async def get_filtered_links(self, type_str: Optional[str] = None) -> list[Link]:
+    async def get_filtered_links(self, type_str: Optional[str] = None) -> list[LinkModel]:
         if type_str:
             try:
                 link_type_enum = LinkType(type_str)

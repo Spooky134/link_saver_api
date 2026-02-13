@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.link.enum import LinkType
 from app.link.repository import LinkRepository
 from app.collection.repository import CollectionRepository
-from app.link.model import Link
-from app.collection.model import Collection
+from app.link.model import LinkModel
+from app.collection.model import CollectionModel
 from app.collection.schema import CollectionCreate, CollectionUpdate, CollectionUpdateBase, CollectionLinkRequest
 # from ..exceptions import NotFoundError, ValidationError
 from app.exceptions import ValidationError, NotFoundError
@@ -17,7 +17,7 @@ class CollectionService:
         self.link_repo = LinkRepository(db)
         self.collection_repo = CollectionRepository(db)
 
-    async def create_collection(self, data: CollectionCreate) -> Collection:
+    async def create_collection(self, data: CollectionCreate) -> CollectionModel:
         if await self.collection_repo.exists_by_name(name=str(data.name)):
             raise ValidationError(detail="Collection with this name already exists")
 
@@ -37,7 +37,7 @@ class CollectionService:
         return created_collection
     
 
-    async def update_collection(self, collection_id: int, data: CollectionUpdateBase, replace=False) -> Collection:
+    async def update_collection(self, collection_id: int, data: CollectionUpdateBase, replace=False) -> CollectionModel:
         if not await self.collection_repo.exists_by_id(id=collection_id):
             raise NotFoundError(detail="Collection not found")
 
@@ -63,7 +63,7 @@ class CollectionService:
         return collection
     
     
-    async def get_collection(self, collection_id: int) -> Collection:
+    async def get_collection(self, collection_id: int) -> CollectionModel:
         collection = await self.collection_repo.get(collection_id=collection_id)
 
         if not collection:
@@ -72,7 +72,7 @@ class CollectionService:
         return collection
     
 
-    async def get_collections(self) -> list[Collection]:
+    async def get_collections(self) -> list[CollectionModel]:
         collections = await self.collection_repo.get_all()
         return collections
     
@@ -84,7 +84,7 @@ class CollectionService:
         await self.collection_repo.delete(collection_id=collection_id)
 
 
-    async def add_links(self, collection_id: int, data: CollectionLinkRequest) -> list[Link]:        
+    async def add_links(self, collection_id: int, data: CollectionLinkRequest) -> list[LinkModel]:
         if not await self.collection_repo.exists_by_id(collection_id):
             raise NotFoundError(detail="Collection not found")
 
@@ -100,7 +100,7 @@ class CollectionService:
         return links
 
 
-    async def get_links(self, collection_id: int) -> list[Link]:
+    async def get_links(self, collection_id: int) -> list[LinkModel]:
         if not await self.collection_repo.exists_by_id(collection_id):
             raise NotFoundError(detail="Collection not found")
 

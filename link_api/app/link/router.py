@@ -5,14 +5,18 @@ from app.link.schema import LinkCreate, LinkResponse, LinkUpdate
 from app.link.service import LinkService
 from app.dependencies import service_factory
 from app.exceptions import ValidationError, NotFoundError
+from app.auth.dependencie import get_current_user
+from app.user.model import UserModel
+
 
 
 router = APIRouter(prefix="/links", tags=["links"])
 
 
 @router.get("/{link_id}", response_model=LinkResponse)
-async def read_link(link_id: int, service: LinkService = Depends(service_factory(LinkService))):
+async def read_link(link_id: int, service: LinkService = Depends(service_factory(LinkService)), user: UserModel = Depends(get_current_user)):
     try:
+        print(user, type(user), user.email)
         return await service.get_link(link_id=link_id)
     except NotFoundError as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)

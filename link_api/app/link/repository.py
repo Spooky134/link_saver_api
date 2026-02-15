@@ -4,99 +4,65 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import exists, select, update, delete
 from sqlalchemy.orm import selectinload
 from app.link.model import LinkModel
-from app.collection.model import CollectionModel
 from app.link.enum import LinkType
+from app.base.repository import BaseRepository
+from app.link.entity import LinkEntity
+from dataclasses import asdict
+from app.common.mapper import EntityMapper
 
 
-class LinkRepository:
-    def __init__(self, session: AsyncSession):
-        self.session = session
+class LinkRepository(BaseRepository[LinkModel, LinkEntity]):
+    def __init__(self, async_session: AsyncSession):
+        super().__init__(
+            model=LinkModel,
+            entity=LinkEntity,
+            async_session=async_session
+        )
 
-    async def get(self, link_id: int) -> Optional[LinkModel]:
+    def _to_entity(self, link_model: LinkModel) -> LinkEntity:
+        return EntityMapper.to_link_entity(link_model)
+
+    async def get_by_id_with_collections(self, link_id: int) -> Optional[LinkEntity]:
         query = (
-            select(LinkModel)
-            .options(selectinload(LinkModel.collections))
-            .where(LinkModel.id==link_id)
+            select(self.model)
+            .options(selectinload(self.model.collections))
+            .where(self.model.id==link_id)
         )
-        result = await self.session.execute(query)
-        return result.scalar_one_or_none()
+        res = await self.async_session.execute(query)
+        res = res.scalar_one_or_none()
+        return self._to_entity(res) if res else None
 
-    async def create(self, link_data: dict) -> LinkModel:
-        new_link = LinkModel(**link_data)
-        new_link.collections = []
-        self.session.add(new_link)
-        await self.session.commit()
-
-        return await self.get(new_link.id)
-
-    async def get_all(self, skip: int = 0, limit: int = 100) -> list[LinkModel]:
-        result = await self.session.execute(
-            select(LinkModel).options(selectinload(LinkModel.collections)).offset(skip).limit(limit)
-        )
-        return result.scalars().all()
-
-    async def update(self, link_id: int, data: dict, collections: Optional[list[CollectionModel]] = None) -> Optional[LinkModel]:
-        link = await self.get(link_id=link_id)
-
-        if collections is not None:
-            link.collections = collections
-
-        for field, value in data.items():
-            setattr(link, field, value)
-
-        link.time_update = datetime.now()
-        await self.session.commit()
-
-        return await self.get(link_id)
-
-    async def delete(self, link_id: int) -> None:
-        await self.session.execute(delete(LinkModel).where(LinkModel.id == link_id))
-        await self.session.commit()
-
-    async def exists_by_url(self, url: str) -> bool:
-        return await self.session.scalar(select(exists()
-                                                .where(LinkModel.url == url)))
-
-    async def exists_by_id(self, link_id: int) -> bool:
-        return await self.session.scalar(select(exists()
-                                                .where(LinkModel.id == link_id)))
-
-    async def get_by_type(self, link_type: Optional[LinkType] = None) -> list[LinkModel]:
-        query = select(LinkModel).options(selectinload(LinkModel.collections))
-
-        if link_type:
-            query = query.where(LinkModel.link_type == link_type.value)
-
-        result = await self.session.execute(query)
-
-        return result.scalars().all()
-
-    async def get_by_ids(self, link_ids: list[int], load_collection: bool = False) -> list[LinkModel]:
-        query = select(LinkModel).where(LinkModel.id.in_(link_ids))
-
-        if load_collection:
-            query = query.options(selectinload(LinkModel.collections))
-
-        result = await self.session.execute(query)
-
-        return result.scalars().all()
-
-    async def get_by_collection_id(self, collection_id: int, skip: int = 0, limit: int = 100) -> list[LinkModel]:
-        result = await self.session.execute(
-            select(LinkModel)
-            .join(LinkModel.collections)
-            .options(
-                selectinload(LinkModel.collections)  # Жадная загрузка коллекций
-            )
-            .where(CollectionModel.id == collection_id)
-            .offset(skip)
+    async def get_all_with_collections(self, offset: int = 0, limit: int = 100) -> list[LinkEntity]:
+        query = (
+            select(self.model)
+            .options(selectinload(self.model.collections))
+            .offset(offset)
             .limit(limit)
         )
+        res = await self.async_session.execute(query)
+        res = [self._to_entity(m) for m in res.scalars().all()]
+        return res
 
-        return result.scalars().all()
+    async def get_all_by_type(self, link_type: LinkType = None) -> list[LinkEntity]:
+        query = (
+            select(self.model)
+            .options(selectinload(self.model.collections))
+            .where(self.model.link_type == link_type.value)
+        )
+        res = await self.async_session.execute(query)
+        res = [self._to_entity(m) for m in res.scalars().all()]
+        return res
 
-    async def exists(self, *, url: Optional[str] = None, id: Optional[int] = None) -> bool:
-        pass
+    async def exists_by_url(self, url: str) -> bool:
+        query = (
+            select(exists().where(self.model.url == url))
+        )
+        result = await self.async_session.execute(query)
+        return result.scalar() or False
 
-    async def filter(self):
-        pass
+    async def update(self, entity_id: int, entity: LinkEntity, _exclude: Optional[set[str]] = None) -> Optional[LinkEntity]:
+        excluded_fields = {"url", "collections", "user_id"}
+        if _exclude:
+            excluded_fields.update(_exclude)
+        link_updated = await super().update(entity_id, entity, _exclude=excluded_fields)
+        return link_updated

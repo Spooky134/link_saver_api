@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from typing import Optional, Dict
 import asyncio
 import json
+from app.link.entity import LinkEntity
+from app.link.enum import LinkType
 
 
 HEADERS = {
@@ -14,23 +16,24 @@ HEADERS = {
 
 # TODO безопасность
 class AsyncLinkInfoParser:
-    VALID_LINK_TYPES = ("website", "book", "article", "music", "video")
-    DEFAULT_LINK_TYPE = "website"
-
     def __init__(self, headers: Optional[Dict] = None, timeout: int = 10) -> None:
         self._headers = headers
         self._timeout = aiohttp.ClientTimeout(total=timeout)
         self._soup = None
         self._og_data = None
 
-    async def fetch(self, url: str) -> dict:
+    async def fetch(self, url: str) -> LinkEntity:
         """Fetch and parse URL content."""
         if not url:
             raise ValueError("URL cannot be empty")
         self._url = url
         try:
-            # TODO ошибка ssl сертификатов
-            async with aiohttp.ClientSession(headers=self._headers, timeout=self._timeout, connector=aiohttp.TCPConnector(ssl=False)) as session:
+            # TODO иногда ошибка ssl сертификатов
+            async with aiohttp.ClientSession(
+                    headers=self._headers,
+                    timeout=self._timeout,
+                    connector=aiohttp.TCPConnector(ssl=False)
+            ) as session:
                 async with session.get(self._url) as response:
                     response.raise_for_status()
                     html = await response.text()
@@ -41,13 +44,14 @@ class AsyncLinkInfoParser:
         except aiohttp.ClientError as e:
             raise Exception(f"Request error: {e}")
         
-
-        return {"title": self._get_title(),
-                "description": self._get_description(),
-                "url": self._get_url(),
-                "image": self._get_image(),
-                "link_type": self._get_link_type()
-                }
+        link_entity = LinkEntity(
+            url=self._get_url(),
+            title=self._get_title(),
+            description=self._get_description(),
+            image_url=self._get_image(),
+            link_type=self._get_link_type()
+        )
+        return link_entity
 
     def _parse_og_tags(self) -> None:
         """Parse Open Graph meta tags."""
@@ -88,23 +92,23 @@ class AsyncLinkInfoParser:
         """Get preview image URL."""
         return self._og_data.get("image", None) if self._og_data else None
 
-    def _get_link_type(self) -> str:
+    def _get_link_type(self) -> LinkType:
         """Get link type with validation."""
         if self._og_data and "type" in self._og_data:
             return self._normalize_link_type(self._og_data["type"])
-        return self.DEFAULT_LINK_TYPE
+        return LinkType.WEBSITE
 
-    def _normalize_link_type(self, type_str: str) -> str:
+    def _normalize_link_type(self, type_str: str) -> LinkType:
         """Normalize link type to predefined values."""
         if not type_str:
-            return self.DEFAULT_LINK_TYPE
+            return LinkType.WEBSITE
         
         type_str = type_str.lower()
-        for valid_type in self.VALID_LINK_TYPES:
-            if valid_type in type_str:
+        for valid_type in LinkType:
+            if valid_type.value in type_str:
                 return valid_type
             
-        return self.DEFAULT_LINK_TYPE
+        return LinkType.WEBSITE
 
 
 def checker(control_data, data):

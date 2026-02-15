@@ -35,7 +35,7 @@ async def get_current_user(token: str = Depends(get_access_token)):
         raise UserNotPresent
     async with async_session_maker() as session:
         user_repo = UserRepository(session)
-        user = await user_repo.get(id=user_id)
+        user = await user_repo.get_by_id(user_id)
         if not user:
             raise UserNotPresent
         return user

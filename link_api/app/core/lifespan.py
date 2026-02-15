@@ -3,8 +3,10 @@ from contextlib import asynccontextmanager
 
 from app.config.logging import setup_logging
 from app.core.database import Base, engine
-from app.link.model import LinkModel, link_collection
+from app.link.model import LinkModel
 from app.collection.model import CollectionModel
+from app.common.model import link_collection
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

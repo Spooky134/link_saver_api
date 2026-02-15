@@ -20,7 +20,7 @@ class LinkInCollection(BaseModel):
 class CollectionCreate(BaseModel):
     name: str = Field(max_length=50)
     description: Optional[str] = Field(default='', max_length=200)
-    link_ids: Optional[list[int]] = None
+    # link_ids: Optional[list[int]] = None
 
 
 class CollectionUpdateBase(BaseModel):

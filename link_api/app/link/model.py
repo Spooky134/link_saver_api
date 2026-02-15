@@ -46,11 +46,3 @@ class LinkModel(Base):
 
     def __str__(self):
         return f"{self.url}"
-
-
-link_collection = Table(
-    'link_collection',
-    Base.metadata,
-    Column('link_id', Integer,ForeignKey('link.id', ondelete="CASCADE"), primary_key=True),
-    Column('collection_id', Integer,ForeignKey('collection.id', ondelete="CASCADE"),  primary_key=True)
-)

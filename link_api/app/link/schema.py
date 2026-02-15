@@ -16,19 +16,17 @@ class CollectionInLink(BaseModel):
 
 
 class LinkCreate(BaseModel):
-    url: HttpUrl = Field(..., example="https://example.com")
+    url: HttpUrl = Field(examples=["https://example.com"])
 
 
 @validate_ids_field("collections_ids")
 class LinkUpdate(BaseModel):
-    # url:HttpUrl = Field(..., example="https://example.com")
     title: Optional[str] = Field(default=None, max_length=100)
     description: Optional[str] = Field(default=None, max_length=400)
-    image: Optional[HttpUrl] = None
-    link_type: Optional[LinkType] = Field(default=None, example=LinkType.ARTICLE)
-    collection_ids: Optional[list[int]] = None
+    image_url: Optional[HttpUrl] = None
+    link_type: Optional[LinkType] = None
 
-    @field_serializer("image")
+    @field_serializer("image_url")
     def serialize_image(self, v):
         return str(v) if v else None
 
@@ -36,14 +34,14 @@ class LinkUpdate(BaseModel):
 class LinkResponse(BaseModel):
     ## user = models.ForeignKey(User, on_delete=models.CASCADE)
     id: int
-    title: str
-    description: str
+    title: Optional[str]
+    description: Optional[str]
     url: HttpUrl
-    image: Optional[HttpUrl]
+    image_url: Optional[HttpUrl]
     link_type: LinkType
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
-    collections: list[CollectionInLink]
+    collections: Optional[list[CollectionInLink]]
 
     class Config:
         from_attributes = True

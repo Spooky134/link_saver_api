@@ -20,11 +20,14 @@ class AuthService:
         if existing_user:
             raise UserExistsError
         hashed_password = get_password_hash(user_register.password)
-
+        data = {
+            "email": user_register.email,
+            "password": hashed_password
+        }
         await self.user_repo.add(
-            email=user_register.email,
-            password=hashed_password
+            data
         )
+        await self.user_repo.async_session.commit()
 
 
     async def login(self, user_login: UserLogin):

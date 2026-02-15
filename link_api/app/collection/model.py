@@ -1,7 +1,15 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import Integer, String, DateTime, ForeignKey, UniqueConstraint, text, Text
+from sqlalchemy import (
+    Integer,
+    String,
+    DateTime,
+    ForeignKey,
+    UniqueConstraint,
+    text,
+    Text,
+)
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from app.core.database import Base
@@ -18,15 +26,17 @@ class CollectionModel(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=text("TIMEZONE('utc', CURRENT_TIMESTAMP)"),
-        nullable=False
+        nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=text("TIMEZONE('utc', CURRENT_TIMESTAMP)"),
         onupdate=text("TIMEZONE('utc', CURRENT_TIMESTAMP)"),
-        nullable=False
+        nullable=False,
     )
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("user.id", ondelete="CASCADE"), index=True
+    )
 
     user: Mapped["UserModel"] = relationship(back_populates="collections")
 

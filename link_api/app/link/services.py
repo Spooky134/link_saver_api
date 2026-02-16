@@ -1,16 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.link.entity import LinkEntity
-from app.link.enum import LinkType
-from app.link.repository import LinkRepository
-from app.collection.repository import CollectionRepository
+from app.link.entities import LinkEntity
+from app.link.enums import LinkType
+from app.link.repositories import LinkRepository
 from app.link.utils.async_link_parser import AsyncLinkInfoParser, HEADERS
-from app.exceptions import ValidationError, NotFoundError
+from app.core.exceptions import ValidationError, NotFoundError
 
 
 class LinkService:
-    def __init__(self, db: AsyncSession):
-        self.link_repo = LinkRepository(db)
-        self.collection_repo = CollectionRepository(db)
+    def __init__(self, link_repository: LinkRepository):
+        self.link_repo = link_repository
 
     #TODO добавлять ссылку в бд сразу а парсить в фоне!!!!
     async def create_link(self, link_data: LinkEntity) -> LinkEntity:
@@ -24,13 +22,13 @@ class LinkService:
         await self.link_repo.async_session.commit()
         return link
     
-    async def update_link(self, link_id: int, link_data: LinkEntity) -> LinkEntity:
-        link = await self.link_repo.update(link_id, link_data)
-        if link is None:
+    async def update_link(self, link_id: int, update_link: LinkEntity) -> LinkEntity:
+        updated_link = await self.link_repo.update(link_id, update_link)
+        if updated_link is None:
             raise NotFoundError(detail="Link not found")
 
         await self.link_repo.async_session.commit()
-        return link
+        return updated_link
     
     async def delete_link(self, link_id: int) -> None:
         result = await self.link_repo.delete(link_id)
@@ -47,8 +45,8 @@ class LinkService:
 
         return link
 
-    async def get_all_links(self) -> list[LinkEntity]:
-        return await self.link_repo.get_all_with_collections()
+    async def get_all_links(self, skip: int = 0, limit: int = 10) -> list[LinkEntity]:
+        return await self.link_repo.get_all_with_collections(skip, limit)
     
-    async def get_links_by_type(self, link_type: LinkType) -> list[LinkEntity]:
-        return await self.link_repo.get_all_by_type(link_type)
+    async def get_links_by_type(self, link_type: LinkType, skip: int = 0, limit: int = 10) -> list[LinkEntity]:
+        return await self.link_repo.get_all_by_type(link_type, skip, limit)

@@ -2,11 +2,10 @@ from fastapi import Depends
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 
-from app.auth.dependencie import get_current_user
-from app.auth.schema import UserLogin
-from app.auth.service import AuthService
+from app.auth.dependencies import get_current_user
+from app.auth.schemas import UserLogin
+from app.auth.services import AuthService
 from app.config.project_config import settings
-from app.dependencies import service_factory
 from app.core.database import async_session_maker
 
 

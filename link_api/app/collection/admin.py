@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from app.collection.model import CollectionModel
+from app.collection.models import CollectionModel
 
 
 class CollectionAdmin(ModelView, model=CollectionModel):

@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from app.link.model import LinkModel
+from app.link.models import LinkModel
 
 
 class LinkAdmin(ModelView, model=LinkModel):

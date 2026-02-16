@@ -4,7 +4,7 @@ from typing import Optional
 from sqlalchemy import Enum, String, DateTime, UniqueConstraint, text
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from app.link.enum import LinkType
+from app.link.enums import LinkType
 from sqlalchemy import Column, Integer, Table, ForeignKey, Text
 from app.core.database import Base
 

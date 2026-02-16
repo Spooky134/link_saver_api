@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 
-from app.link.enum import LinkType
+from app.link.enums import LinkType
 from app.core.decorators import validate_ids_field
 
 class CollectionInLink(BaseModel):
@@ -11,8 +11,8 @@ class CollectionInLink(BaseModel):
     id: int
     name: str
 
-    class Config:
-        from_attributes = True
+    # class Config:
+    #     from_attributes = True
 
 
 class LinkCreate(BaseModel):
@@ -43,7 +43,7 @@ class LinkResponse(BaseModel):
     updated_at: Optional[datetime]
     collections: Optional[list[CollectionInLink]]
 
-    class Config:
-        from_attributes = True
+    # class Config:
+    #     from_attributes = True
 
 

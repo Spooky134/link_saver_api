@@ -1,14 +1,12 @@
-from datetime import datetime
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import exists, select, update, delete
+from sqlalchemy import exists, select
 from sqlalchemy.orm import selectinload
-from app.link.model import LinkModel
-from app.link.enum import LinkType
-from app.base.repository import BaseRepository
-from app.link.entity import LinkEntity
-from dataclasses import asdict
-from app.common.mapper import EntityMapper
+from app.link.models import LinkModel
+from app.link.enums import LinkType
+from app.base.repositories import BaseRepository
+from app.link.entities import LinkEntity
+from app.common.mappers import EntityMapper
 
 
 class LinkRepository(BaseRepository[LinkModel, LinkEntity]):
@@ -32,7 +30,7 @@ class LinkRepository(BaseRepository[LinkModel, LinkEntity]):
         res = res.scalar_one_or_none()
         return self._to_entity(res) if res else None
 
-    async def get_all_with_collections(self, offset: int = 0, limit: int = 100) -> list[LinkEntity]:
+    async def get_all_with_collections(self, offset: int = 0, limit: int = 10) -> list[LinkEntity]:
         query = (
             select(self.model)
             .options(selectinload(self.model.collections))
@@ -43,11 +41,13 @@ class LinkRepository(BaseRepository[LinkModel, LinkEntity]):
         res = [self._to_entity(m) for m in res.scalars().all()]
         return res
 
-    async def get_all_by_type(self, link_type: LinkType = None) -> list[LinkEntity]:
+    async def get_all_by_type(self, link_type: LinkType = None, skip: int = 0, limit: int = 10) -> list[LinkEntity]:
         query = (
             select(self.model)
             .options(selectinload(self.model.collections))
             .where(self.model.link_type == link_type.value)
+            .offset(skip)
+            .limit(limit)
         )
         res = await self.async_session.execute(query)
         res = [self._to_entity(m) for m in res.scalars().all()]
@@ -60,9 +60,10 @@ class LinkRepository(BaseRepository[LinkModel, LinkEntity]):
         result = await self.async_session.execute(query)
         return result.scalar() or False
 
-    async def update(self, entity_id: int, entity: LinkEntity, _exclude: Optional[set[str]] = None) -> Optional[LinkEntity]:
+    # TODO юзер не нужен
+    async def update(self, link_id: int, link_entity: LinkEntity, _exclude: Optional[set[str]] = None) -> Optional[LinkEntity]:
         excluded_fields = {"url", "collections", "user_id"}
         if _exclude:
             excluded_fields.update(_exclude)
-        link_updated = await super().update(entity_id, entity, _exclude=excluded_fields)
+        link_updated = await super().update(link_id, link_entity, _exclude=excluded_fields)
         return link_updated

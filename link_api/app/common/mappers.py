@@ -1,8 +1,8 @@
-from app.link.model import LinkModel
-from app.collection.model import CollectionModel
-from app.link.entity import LinkEntity
-from app.collection.entity import CollectionEntity
-from app.base.mapper import BaseMapper
+from app.link.models import LinkModel
+from app.collection.models import CollectionModel
+from app.link.entities import LinkEntity
+from app.collection.entities import CollectionEntity
+from app.base.mappers import BaseMapper
 from sqlalchemy import inspect
 
 
@@ -33,3 +33,8 @@ class EntityMapper(BaseMapper):
             pass
         entity = CollectionEntity(**data)
         return entity
+
+class ModelMapper(BaseMapper):
+    @classmethod
+    def to_link_model(cls, link_entity: LinkEntity) -> LinkModel:
+        pass

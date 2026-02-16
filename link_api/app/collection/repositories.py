@@ -7,12 +7,13 @@ from sqlalchemy import exists, func, select, update, delete
 from sqlalchemy.orm import selectinload
 
 # from app.link.entity import LinkEntity
-from app.link.model import LinkModel
-from app.link.enum import LinkType
-from app.collection.model import CollectionModel
+from app.link.models import LinkModel
+from app.link.enums import LinkType
+from app.collection.models import CollectionModel
 from app.common.model import link_collection
-from app.base.repository import BaseRepository
-from app.collection.entity import CollectionEntity
+from app.base.repositories import BaseRepository, T, E
+from app.collection.entities import CollectionEntity
+from app.common.mappers import EntityMapper
 
 
 class CollectionRepository(BaseRepository[CollectionModel, CollectionEntity]):
@@ -23,6 +24,9 @@ class CollectionRepository(BaseRepository[CollectionModel, CollectionEntity]):
             async_session=async_session
         )
 
+    def _to_entity(self, collection_model: CollectionModel) -> E:
+        return EntityMapper.to_collection_entity(collection_model)
+
     async def get_by_id_with_links(self, collection_id: int) -> Optional[CollectionEntity]:
         query = (
             select(self.model)
@@ -30,9 +34,10 @@ class CollectionRepository(BaseRepository[CollectionModel, CollectionEntity]):
             .where(self.model.id == collection_id)
         )
         res = await self.async_session.execute(query)
-        return self._to_entity(res.scalar_one_or_none())
+        res = res.scalar_one_or_none()
+        return self._to_entity(res) if res else None
 
-    async def get_all_with_links(self, skip: int = 0, limit: int = 100) -> list[CollectionEntity]:
+    async def get_all_with_links(self, skip: int = 0, limit: int = 10) -> list[CollectionEntity]:
         query = (
             select(CollectionModel)
             .options(selectinload(CollectionModel.links))
@@ -53,34 +58,32 @@ class CollectionRepository(BaseRepository[CollectionModel, CollectionEntity]):
         return count or 0
 
     async def exists_by_name(self, name: str) -> bool:
-        query = select(exists().where(self.model.name == name))
-        result = await self.async_session.execute(query)
-        return result.scalar() or False
-
-    # TODO подумать еще
-    async def update(self, collection_id: int, collection_entity: CollectionEntity) -> Optional[CollectionEntity]:
-        excluded_fields = {"id", "created_at", "updated_at", "user_id", "links"}
-        collection = self.async_session.get(self.model, collection_id)
-        if collection:
-            update_data = asdict(collection_entity)
-            for key, value in update_data.items():
-                if key not in excluded_fields and hasattr(collection, key) and value is not None:
-                    setattr(collection, key, value)
-
-        await self.async_session.flush()
-        return self._to_entity(collection)
-
-    # TODO to_model принимает не тот тип
-    async def set_links_to_collection(self, collection_id: int, link_entities: list["LinkEntity"]) -> None:
         query = (
-            select(self.model)
-            .options(selectinload(self.model.links))
-            .where(self.model.id == collection_id)
+            select(exists().where(self.model.name == name))
         )
         res = await self.async_session.execute(query)
-        collection = res.scalar_one_or_none()
-        collection.links = [self._to_model(e) for e in link_entities]
-        await self.async_session.flush()
+        return res.scalar() or False
+
+    # TODO юзер не нужен
+    async def update(self, collection_id: int, collection_entity: CollectionEntity, _exclude: Optional[set[str]] = None) -> Optional[CollectionEntity]:
+        excluded_fields = {"links", "user_id"}
+        if _exclude:
+            excluded_fields.update(_exclude)
+        collection_update = await super().update(collection_id, collection_entity, _exclude=excluded_fields)
+        return collection_update
+
+
+    # async def set_links_to_collection(self, collection_id: int, link_entities: list["LinkEntity"]) -> None:
+    #     query = (
+    #         select(self.model)
+    #         .options(selectinload(self.model.links))
+    #         .where(self.model.id == collection_id)
+    #     )
+    #     res = await self.async_session.execute(query)
+    #     collection = res.scalar_one_or_none()
+    #     collection.links = [self._to_model(e) for e in link_entities]
+    #     await self.async_session.flush()
+    #     await self.async_session.refresh(collection)
 
     async def add_links_to_collection(self, collection_id, link_entities: list["LinkEntity"]) -> None:
         query = (
@@ -109,11 +112,12 @@ class CollectionRepository(BaseRepository[CollectionModel, CollectionEntity]):
         await self.async_session.flush()
         return res.rowcount > 0
 
-    async def search_by_name(self, name_query: str, limit: int = 20) -> list[CollectionEntity]:
+    async def search_by_name(self, name_query: str, skip: int = 0, limit: int = 10) -> list[CollectionEntity]:
         query = (
             select(self.model)
             .options(selectinload(self.model.links))
             .where(self.model.name.ilike(f"%{name_query}%"))
+            .offset(skip)
             .limit(limit)
         )
         res = await self.async_session.execute(query)

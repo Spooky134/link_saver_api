@@ -1,20 +1,29 @@
 import uvicorn
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, Request
+from fastapi.responses import JSONResponse
 from sqladmin import Admin
 
 from app.admin.auth import authentication_backend
-from app.auth.router import router as auth_router
+from app.auth.routers import router as auth_router
 from app.collection.admin import CollectionAdmin
-from app.collection.router import router as collection_router
+from app.collection.routers import router as collection_router
 from app.config.project_config import settings
 from app.core.database import async_session_maker, engine
 from app.core.lifespan import lifespan
 from app.link.admin import LinkAdmin
-from app.link.router import router as link_router
+from app.link.routers import router as link_router
 from app.root import router as root_router
 from app.user.admin import UserAdmin
+from app.core.exceptions import BaseAppException
 
 app = FastAPI(title=settings.SERVICE_NAME, lifespan=lifespan)
+
+@app.exception_handler(BaseAppException)
+async def app_exception_handler(request: Request, exc: BaseAppException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail}
+    )
 
 api_v1_router = APIRouter(prefix="/v1", tags=["v1"])
 

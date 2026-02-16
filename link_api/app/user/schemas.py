@@ -23,6 +23,3 @@ class UserLogin(BaseModel):
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
-
-    class Config:
-        from_attributes = True

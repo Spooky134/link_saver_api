@@ -1,24 +1,18 @@
-from datetime import datetime
-from typing import Optional
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.link.enum import LinkType
-from app.link.repository import LinkRepository
-from app.collection.repository import CollectionRepository
-from app.link.model import LinkModel
-from app.collection.model import CollectionModel
-from app.collection.schema import CollectionCreate, CollectionUpdate, CollectionUpdateBase, CollectionLinkRequest
-# from ..exceptions import NotFoundError, ValidationError
-from app.exceptions import ValidationError, NotFoundError
-from app.collection.entity import CollectionEntity
+from app.link.repositories import LinkRepository
+from app.collection.repositories import CollectionRepository
+from app.link.models import LinkModel
+from app.collection.schemas import CollectionLinkRequest
+from app.collection.entities import CollectionEntity
+from app.core.exceptions import ValidationError, NotFoundError
 
 
-#TODO оптимизиировать количество методов
 class CollectionService:
-    def __init__(self, db: AsyncSession):
-        self.link_repo = LinkRepository(db)
-        self.collection_repo = CollectionRepository(db)
+    def __init__(self, collection_repository: CollectionRepository, link_repository: LinkRepository):
+        self.collection_repo = collection_repository
+        self.link_repo = link_repository
 
-    async def create_collection(self, collection_entity: CollectionEntity,  data: CollectionCreate=None) -> CollectionModel:
+    # TODO состояние гонки при проверке???
+    async def create_collection(self, collection_entity: CollectionEntity) -> CollectionEntity:
         if await self.collection_repo.exists_by_name(name=str(collection_entity.name)):
             raise ValidationError(detail="Collection with this name already exists")
 
@@ -26,46 +20,30 @@ class CollectionService:
 
         await self.collection_repo.async_session.commit()
         return created_collection
-    
 
-    async def update_collection(self, collection_id: int, data: CollectionUpdateBase, replace=False) -> CollectionModel:
-        if not await self.collection_repo.exists_by_id(collection_id):
+    # TODO состояние гонки при проверке???
+    async def update_collection(self, collection_id: int, update_collection: CollectionEntity) -> CollectionEntity:
+        if await self.collection_repo.exists_by_name(update_collection.name):
+            raise NotFoundError(detail="Collection with this name already exists")
+
+        updated_collection = await self.collection_repo.update(collection_id, update_collection)
+        if updated_collection is None:
             raise NotFoundError(detail="Collection not found")
 
-        new_links = []
-        if hasattr(data, 'link_ids') and data.link_ids is not None:
-            new_links = self.link_repo.get_by_ids(data.link_ids)
-            
-            if len(new_links) != len(data.link_ids):
-                raise NotFoundError(detail="One or more links not found")
-
-        update_data = data.model_dump(exclude_unset=True, exclude={"link_ids"})
-
-        
-        collection = await self.collection_repo.update(collection_id=collection_id, data=update_data)
-
-        
-        if replace:
-            await self.collection_repo.set_links_to_collection(new_links)
-        else:
-            if new_links: 
-                await self.collection_repo.add_links_to_collection(new_links)
         await self.collection_repo.async_session.commit()
-        return collection
+        return updated_collection
     
     
-    async def get_collection(self, collection_id: int) -> CollectionModel:
+    async def get_collection(self, collection_id: int) -> CollectionEntity:
         collection = await self.collection_repo.get_by_id_with_links(collection_id)
-
         if not collection:
             raise NotFoundError(detail="Collection not found")
 
         return collection
-    
 
-    async def get_collections(self) -> list[CollectionModel]:
-        collections = await self.collection_repo.get_all_with_links()
-        return collections
+
+    async def get_all_collections(self, skip: int = 0, limit: int = 10) -> list[CollectionEntity]:
+        return await self.collection_repo.get_all_with_links(skip, limit)
     
 
     async def delete_collection(self, collection_id: int) -> None:
@@ -106,14 +84,14 @@ class CollectionService:
         if not await self.collection_repo.exists_by_id(collection_id):
             raise NotFoundError(detail="Collection not found")
 
-        answer = await self.collection_repo.remove_link_from_collection(collection_id=collection_id, link_id=link_id)
+        answer = await self.collection_repo.remove_link_from_collection(collection_id, link_id)
 
         if not answer:
             raise NotFoundError(detail="Link not found in this collection")
 
         await self.collection_repo.async_session.commit()
         
-
+    # TODO нормальный ответ придумать
     async def links_count(self, collection_id: int) -> dict:
         if not await self.collection_repo.exists_by_id(collection_id):
             raise NotFoundError(detail="Collection not found")
@@ -123,6 +101,5 @@ class CollectionService:
         return {"count_links" : result}
     
 
-    async def search_by_name(self, query_string: str):
-
-        return await self.collection_repo.search_by_name(name_query=query_string, limit=30)
+    async def search_by_name(self, query_string: str, skip: int = 0, limit: int = 10) -> list[CollectionEntity]:
+        return await self.collection_repo.search_by_name(query_string, skip, limit)

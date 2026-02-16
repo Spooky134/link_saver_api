@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import List
+from typing import Optional
 
 
 @dataclass(frozen=True)
 class UserEntity:
-    id: int
-    email: str
-    password: str
+    id: Optional[int] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
 
     # links: list["LinkEntity"]
     # collections: list["CollectionEntity"]

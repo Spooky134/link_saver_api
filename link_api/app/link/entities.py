@@ -2,9 +2,9 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 
-from app.collection.entity import CollectionEntity
-from app.link.enum import LinkType
-from app.user.entity import UserEntity
+from app.collection.entities import CollectionEntity
+from app.link.enums import LinkType
+from app.user.entities import UserEntity
 
 
 @dataclass(frozen=True)

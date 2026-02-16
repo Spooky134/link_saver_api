@@ -1,9 +1,9 @@
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
-from app.user.model import UserModel
-from app.user.entity import UserEntity
-from app.base.repository import BaseRepository
+from app.user.models import UserModel
+from app.user.entities import UserEntity
+from app.base.repositories import BaseRepository
 
 
 class UserRepository(BaseRepository[UserModel, UserEntity]):
@@ -22,7 +22,4 @@ class UserRepository(BaseRepository[UserModel, UserEntity]):
 
         res = await self.async_session.execute(query)
         user = res.scalar_one_or_none()
-        return self._to_entity(user)
-
-    async def update(self) -> Optional[UserModel]:
-        pass
+        return self._to_entity(user) if user else None

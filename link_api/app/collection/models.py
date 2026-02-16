@@ -13,8 +13,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from app.core.database import Base
-from app.link.model import LinkModel
-from app.user.model import UserModel
+from app.link.models import LinkModel
+from app.user.models import UserModel
 
 
 class CollectionModel(Base):

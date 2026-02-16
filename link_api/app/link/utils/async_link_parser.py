@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from typing import Optional, Dict
 import asyncio
 import json
-from app.link.entity import LinkEntity
-from app.link.enum import LinkType
+from app.link.entities import LinkEntity
+from app.link.enums import LinkType
 
 
 HEADERS = {

@@ -1,4 +1,3 @@
-from fastapi import Depends
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 
@@ -6,26 +5,33 @@ from app.auth.dependencies import get_current_user
 from app.auth.schemas import UserLogin
 from app.auth.services import AuthService
 from app.config.project_config import settings
-from app.core.database import async_session_maker
+from app.core.database import get_db_session
+from app.user.dependencies import get_user_repository
+from app.user.entities import UserEntity
 
 
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()
-        email, password = form["username"], form["password"]
 
+        user_data = UserLogin(
+            email=form.get("username"),
+            password=form.get("password")
+        )
 
-        async with async_session_maker() as session:
-            auth_service = AuthService(session)
+        async for async_session in get_db_session():
+            user_repo = await get_user_repository(async_session)
+            auth_service = AuthService(user_repo)
             try:
+                user_entity = UserEntity(**user_data.model_dump())
                 access_token = await auth_service.login(
-                    user_login=UserLogin(email=email, password=password)
+                    user_login=user_entity
                 )
                 request.session.update({"token": access_token})
                 return True
             except Exception:
                 return False
-
+        return False
 
     async def logout(self, request: Request) -> bool:
         request.session.clear()
@@ -35,11 +41,11 @@ class AdminAuth(AuthenticationBackend):
         token = request.session.get("token")
         if not token:
             return False
-
-        user = await get_current_user(token=token)
-        if not user:
-            return False
-        # Check the token in depth
+        async for async_session in get_db_session():
+            user_repo = await get_user_repository(async_session)
+            user = await get_current_user(token, user_repo)
+            if not user:
+                return False
         return True
 
 

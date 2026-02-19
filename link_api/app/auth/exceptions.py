@@ -1,7 +1,4 @@
-from fastapi import status
 from app.core.exceptions import BaseAppException
-
-
 
 
 class PasswordNotMatch(BaseAppException):

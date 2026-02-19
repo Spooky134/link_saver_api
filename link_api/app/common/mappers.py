@@ -1,40 +1,30 @@
 from app.link.models import LinkModel
 from app.collection.models import CollectionModel
-from app.link.entities import LinkEntity
-from app.collection.entities import CollectionEntity
-from app.base.mappers import BaseMapper
+from app.link.entities import LinkEntity, LinkWithCollectionsEntity
+from app.collection.entities import CollectionEntity, CollectionWithLinksEntity
+from app.core.mappers import BaseMapper
 from sqlalchemy import inspect
+
 
 
 class EntityMapper(BaseMapper):
     @classmethod
-    def to_link_entity(cls, model: LinkModel) -> LinkEntity:
+    def to_link_with_collections(cls, model: LinkModel) -> LinkWithCollectionsEntity:
         data = cls.model_to_dict(model)
-        inspected = inspect(model)
 
-        if 'collections' not in inspected.unloaded:
-            data["collections"] = [
-                cls.to_collection_entity(col) for col in model.collections
-            ]
-        else:
-            pass
-        entity = LinkEntity(**data)
-        return entity
+        data["collections"] = [
+            CollectionEntity(**cls.model_to_dict(m)) for m in model.collections
+        ] if cls.is_loaded(model, 'collections') else []
+
+        return LinkWithCollectionsEntity(**data)
 
     @classmethod
-    def to_collection_entity(cls, model: CollectionModel) -> CollectionEntity:
+    def to_collection_with_links(cls, model: CollectionModel) -> CollectionWithLinksEntity:
         data = cls.model_to_dict(model)
-        inspected = inspect(model)
-        if 'links' not in inspected.unloaded:
-            data["links"] = [
-                cls.to_link_entity(link) for link in model.links
-            ]
-        else:
-            pass
-        entity = CollectionEntity(**data)
-        return entity
 
-class ModelMapper(BaseMapper):
-    @classmethod
-    def to_link_model(cls, link_entity: LinkEntity) -> LinkModel:
-        pass
+
+        data["links"] = [
+            LinkEntity(**cls.model_to_dict(m)) for m in model.links
+        ] if cls.is_loaded(model, 'links') else []
+
+        return CollectionWithLinksEntity(**data)

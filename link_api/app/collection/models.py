@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import (
-    Integer,
     String,
     DateTime,
     ForeignKey,
@@ -14,7 +13,6 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from app.core.database import Base
 from app.link.models import LinkModel
-from app.user.models import UserModel
 
 
 class CollectionModel(Base):

@@ -3,9 +3,8 @@ from contextlib import asynccontextmanager
 
 from app.config.logging import setup_logging
 from app.core.database import Base, engine
-from app.link.models import LinkModel
+from app.link.models import LinkModel, link_collection
 from app.collection.models import CollectionModel
-from app.common.model import link_collection
 
 
 @asynccontextmanager

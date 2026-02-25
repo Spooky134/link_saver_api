@@ -8,7 +8,7 @@ from app.link.models import LinkModel
 from app.collection.models import CollectionModel
 from app.core.repositories import OwnedEntityRepository
 from app.collection.entities import CollectionEntity
-from app.common.mappers import EntityMapper
+from app.collection.mappers import CollectionMapper
 
 
 class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEntity]):
@@ -19,7 +19,7 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
         )
 
     def _to_entity(self, orm_obj: CollectionModel) -> CollectionEntity:
-        return EntityMapper.to_collection(orm_obj)
+        return CollectionMapper.to_collection(orm_obj)
 
     async def search_by_name(self, user_id: int, name_query: str, offset: int = 0, limit: int = 100) -> List[CollectionEntity]:
         orm_objects = await self._list_by_filters(

@@ -7,6 +7,7 @@ from app.link.models import LinkModel, link_collection
 from app.link.enums import LinkType
 from app.core.repositories import OwnedEntityRepository
 from app.link.entities import LinkEntity, LinkWithCollectionsEntity
+from app.link.mappers import LinkMapper
 from app.common.mappers import EntityMapper
 
 
@@ -18,7 +19,7 @@ class LinkRepository(OwnedEntityRepository[LinkModel, LinkEntity]):
         )
 
     def _to_entity(self, orm_obj: LinkModel) -> LinkEntity:
-        return EntityMapper.to_link(orm_obj)
+        return LinkMapper.to_link(orm_obj)
 
     async def exists_by_url(self, user_id: int, url: str) -> bool:
         return await self._exists_by_filters(

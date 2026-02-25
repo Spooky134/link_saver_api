@@ -1,7 +1,7 @@
 from dataclasses import asdict
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.common.mappers import EntityMapper
+from app.user.mappers import UserMapper
 from app.user.models import UserModel
 from app.user.entities import UserEntity, CreateUserEntity
 from app.core.repositories import EntityRepository
@@ -15,7 +15,7 @@ class UserRepository(EntityRepository[UserModel, UserEntity]):
         )
 
     def _to_entity(self, orm_obj: UserModel) -> UserEntity:
-        return EntityMapper.to_user(orm_obj)
+        return UserMapper.to_user(orm_obj)
 
     async def get_by_email(self, email: str) -> Optional[UserEntity]:
         user = await self._get_by_filters(

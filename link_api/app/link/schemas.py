@@ -11,7 +11,7 @@ class CollectionInLink(BaseModel):
 class CreateLink(BaseModel):
     url: HttpUrl = Field(examples=["https://example.com"])
 
-class UpdateLink(BaseModel):
+class PatchLink(BaseModel):
     title: Optional[str] = Field(default=None, min_length=1, max_length=100)
     description: Optional[str] = Field(default=None, min_length=1, max_length=400)
     image_url: Optional[HttpUrl] = Field(default=None, examples=["https://example.com/images/picture.jpg"])
@@ -30,6 +30,7 @@ class Link(BaseModel):
     link_type: LinkType
     created_at: datetime
     updated_at: datetime
+
 
 class LinkWithCollections(Link):
     collections: Optional[List[CollectionInLink]]

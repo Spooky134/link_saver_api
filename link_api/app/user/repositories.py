@@ -29,9 +29,9 @@ class UserRepository(EntityRepository[UserModel, UserEntity]):
         payload = asdict(entity)
         orm_obj = self.model(**payload)
 
-        self.async_session.add(orm_obj)
-        await self.async_session.flush()
-        await self.async_session.refresh(orm_obj)
+        self._async_session.add(orm_obj)
+        await self._async_session.flush()
+        await self._async_session.refresh(orm_obj)
 
         return self._to_entity(orm_obj)
 

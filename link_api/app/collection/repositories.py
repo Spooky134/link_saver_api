@@ -61,7 +61,7 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
             .options(selectinload(self.model.links))
             .where(self.model.id == collection_id, self.model.user_id == user_id)
         )
-        res = await self.async_session.execute(query)
+        res = await self._async_session.execute(query)
         collection = res.scalar_one_or_none()
 
         if collection is None:
@@ -71,7 +71,7 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
             select(LinkModel)
             .where(LinkModel.id.in_(link_ids), self.model.user_id == user_id)
         )
-        links_res = await self.async_session.execute(link_query)
+        links_res = await self._async_session.execute(link_query)
         links_to_add = links_res.scalars().all()
 
         existing_ids = {link.id for link in collection.links}
@@ -80,7 +80,7 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
             if link.id not in existing_ids:
                 collection.links.append(link)
 
-        await self.async_session.flush()
+        await self._async_session.flush()
 
     async def remove_links(self, user_id: int, collection_id: int, link_ids: List[int]) -> None:
         if not link_ids:
@@ -91,7 +91,7 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
             .options(selectinload(self.model.links))
             .where(self.model.id == collection_id, self.model.user_id == user_id)
         )
-        res = await self.async_session.execute(query)
+        res = await self._async_session.execute(query)
         collection = res.scalar_one_or_none()
 
         if collection is None:
@@ -103,7 +103,7 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
             link for link in collection.links if link.id not in links_to_remove_ids
         ]
 
-        await self.async_session.flush()
+        await self._async_session.flush()
 
     async def count_links(self, user_id: int, collection_id: int) -> Optional[int]:
         query = (
@@ -113,5 +113,5 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
             .where(self.model.id == collection_id, self.model.user_id == user_id)
             .group_by(self.model.id)
         )
-        result = await self.async_session.execute(query)
+        result = await self._async_session.execute(query)
         return result.scalar_one_or_none()

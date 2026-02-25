@@ -1,3 +1,4 @@
+from app.core.unit_of_work import UnitOfWork
 from app.link.entities import LinkEntity, UpdateLinkEntity, LinkWithCollectionsEntity
 from app.link.enums import LinkType
 from app.link.repositories import LinkRepository
@@ -6,7 +7,8 @@ from app.core.exceptions import ValidationError, NotFoundError
 
 
 class LinkService:
-    def __init__(self, link_repository: LinkRepository, link_parser: AsyncLinkInfoParser):
+    def __init__(self, uow: UnitOfWork, link_repository: LinkRepository, link_parser: AsyncLinkInfoParser):
+        self.uow = uow
         self.link_repo = link_repository
         self.link_parser = link_parser
 
@@ -18,23 +20,21 @@ class LinkService:
         create_link_entity = await self.link_parser.fetch(link_url)
 
         created_link = await self.link_repo.add(user_id, create_link_entity)
-        await self.link_repo.async_session.commit()
+        await self.uow.commit()
         return created_link
     
     async def update_link(self, user_id: int, link_id: int, update_link: UpdateLinkEntity) -> LinkEntity:
         updated_link = await self.link_repo.update(user_id, link_id, update_link)
         if updated_link is None:
             raise NotFoundError(detail="Link not found")
-
-        await self.link_repo.async_session.commit()
+        await self.uow.commit()
         return updated_link
     
     async def delete_link(self, user_id: int, link_id: int) -> None:
         deleted = await self.link_repo.delete(user_id, link_id)
         if not deleted:
             raise NotFoundError(detail="Link not found")
-
-        await self.link_repo.async_session.commit()
+        await self.uow.commit()
 
     async def get_link(self, user_id: int, link_id: int) -> LinkWithCollectionsEntity:
         link = await self.link_repo.get_with_collections(user_id, link_id)

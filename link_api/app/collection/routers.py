@@ -6,11 +6,11 @@ from app.collection.entities import CreateCollectionEntity, UpdateCollectionEnti
 from app.collection.schemas import (
     Collection,
     CollectionCreate,
-    CollectionUpdateFull,
+    CollectionPatch,
     CollectionUpdate,
     CountLinkInCollection,
     AddLinksToCollection,
-    RemoveLinksFromCollection, CollectionPatch
+    RemoveLinksFromCollection
 )
 from app.link.schemas import Link
 from app.collection.dependencies import CollectionServiceDep
@@ -23,7 +23,7 @@ router = APIRouter(prefix="/collections", tags=["collections"])
 async def search_collection(
         service: CollectionServiceDep,
         current_user: CurrentUserDep,
-        name: str = Query(..., min_length=1, example="String"),
+        name: str = Query(..., min_length=1, examples=["String"]),
         skip: int = 0, limit: int = 10
 ):
     return await service.search_by_name(current_user.id, name, skip=skip, limit=limit)

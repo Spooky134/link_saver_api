@@ -6,9 +6,11 @@ from app.auth.services import AuthService
 from app.config.project_config import settings
 from fastapi import Request
 from app.auth.exceptions import MissingToken, TokenExpired, IncorrectFormatToken, UserNotPresent
+from app.core.unit_of_work import UnitOfWork
 from app.user.dependencies import get_user_repository
 from app.user.entities import UserEntity
 from app.user.repositories import UserRepository
+from app.core.dependecies import get_uow
 
 
 def get_access_token(request: Request) -> str:
@@ -43,9 +45,13 @@ async def get_current_user(
 
 
 async def get_auth_service(
+        uow: UnitOfWork = Depends(get_uow),
         user_repository: UserRepository = Depends(get_user_repository)
 ) -> AuthService:
-    return AuthService(user_repository)
+    return AuthService(
+        uow=uow,
+        user_repository=user_repository
+    )
 
 
 AuthServiceDep: type[AuthService] = Annotated[AuthService, Depends(get_auth_service)]

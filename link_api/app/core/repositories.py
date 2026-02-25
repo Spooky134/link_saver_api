@@ -2,7 +2,12 @@ from dataclasses import asdict
 from typing import TypeVar, Generic, Type, List, Optional, Any
 from sqlalchemy import delete, select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.core.constants import UNSET
+from app.core.types import UNSET
+from app.core.logger import get_logger
+
+
+logger = get_logger(__name__)
+
 
 
 ModelType = TypeVar("ModelType")
@@ -12,14 +17,14 @@ EntityType = TypeVar("EntityType")
 class BaseRepository(Generic[ModelType, EntityType]):
     def __init__(self, model: Type[ModelType], async_session: AsyncSession):
         self.model = model
-        self.async_session = async_session
+        self._async_session = async_session
 
     async def _get_by_filters(self, *filters) -> Optional[ModelType]:
         query = (
             select(self.model)
             .where(*filters)
         )
-        result = await self.async_session.execute(query)
+        result = await self._async_session.execute(query)
         return result.scalar_one_or_none()
 
     async def _exists_by_filters(self, *filters) -> bool:
@@ -27,7 +32,7 @@ class BaseRepository(Generic[ModelType, EntityType]):
             select(exists()
                    .where(*filters))
         )
-        result = await self.async_session.execute(query)
+        result = await self._async_session.execute(query)
         return result.scalar() or False
 
     async def _list_by_filters(self, *filters, offset=0, limit=100) -> List[ModelType]:
@@ -37,7 +42,7 @@ class BaseRepository(Generic[ModelType, EntityType]):
             .offset(offset)
             .limit(limit)
         )
-        result = await self.async_session.execute(query)
+        result = await self._async_session.execute(query)
         return result.scalars().all()
 
     async def _delete_by_filters(self, *filters) -> bool:
@@ -45,19 +50,23 @@ class BaseRepository(Generic[ModelType, EntityType]):
             delete(self.model)
             .where(*filters)
         )
-        res = await self.async_session.execute(stmt)
-        await self.async_session.flush()
+        res = await self._async_session.execute(stmt)
+        await self._async_session.flush()
         return res.rowcount > 0
 
     async def _update_model(self, orm_obj, entity):
         update_data = asdict(entity)
 
         for key, value in update_data.items():
-            if value is not UNSET and hasattr(orm_obj, key):
+            if (value is not UNSET) and hasattr(orm_obj, key):
+                logger.info(f"{key}={value}")
                 setattr(orm_obj, key, value)
 
-        await self.async_session.flush()
-        await self.async_session.refresh(orm_obj)
+
+
+        await self._async_session.flush()
+        await self._async_session.refresh(orm_obj)
+
 
         return orm_obj
 
@@ -77,9 +86,9 @@ class OwnedEntityRepository(EntityRepository[ModelType, EntityType]):
 
         orm_obj.user_id = user_id
 
-        self.async_session.add(orm_obj)
-        await self.async_session.flush()
-        await self.async_session.refresh(orm_obj)
+        self._async_session.add(orm_obj)
+        await self._async_session.flush()
+        await self._async_session.refresh(orm_obj)
 
         return self._to_entity(orm_obj)
 
@@ -99,10 +108,11 @@ class OwnedEntityRepository(EntityRepository[ModelType, EntityType]):
         return self._to_entities(orm_objects)
 
     async def update(self, user_id: int, entity_id: int, update_entity: Any) -> Optional[EntityType]:
-        orm_obj = self._get_by_filters(
+        orm_obj = await self._get_by_filters(
             self.model.user_id == user_id,
             self.model.id == entity_id,
         )
+        logger.info(update_entity)
         if not orm_obj:
             return None
 

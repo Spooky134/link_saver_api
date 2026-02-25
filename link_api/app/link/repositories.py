@@ -33,9 +33,9 @@ class LinkRepository(OwnedEntityRepository[LinkModel, LinkEntity]):
             .where(self.model.id==link_id, self.model.user_id == user_id)
             .options(selectinload(self.model.collections))
         )
-        res = await self.async_session.execute(query)
+        res = await self._async_session.execute(query)
         link = res.scalar_one_or_none()
-        if link:
+        if link is None:
             return None
         return EntityMapper.to_link_with_collections(link)
 
@@ -54,7 +54,7 @@ class LinkRepository(OwnedEntityRepository[LinkModel, LinkEntity]):
             .offset(offset)
             .limit(limit)
         )
-        links_res = await self.async_session.execute(links_query)
+        links_res = await self._async_session.execute(links_query)
 
         return self._to_entities(links_res.scalars().all())
 

@@ -1,4 +1,6 @@
 from typing import List
+
+from app.core.unit_of_work import UnitOfWork
 from app.link.entities import LinkEntity
 from app.collection.repositories import CollectionRepository
 from app.collection.entities import CollectionEntity, CreateCollectionEntity, UpdateCollectionEntity
@@ -7,7 +9,8 @@ from app.link.repositories import LinkRepository
 
 
 class CollectionService:
-    def __init__(self, collection_repository: CollectionRepository, link_repository: LinkRepository):
+    def __init__(self, uow: UnitOfWork, collection_repository: CollectionRepository, link_repository: LinkRepository):
+        self.uow = uow
         self.collection_repo = collection_repository
         self.link_repo = link_repository
 
@@ -16,8 +19,7 @@ class CollectionService:
             raise ValidationError(detail="Collection with this name already exists")
 
         created_collection = await self.collection_repo.add(user_id, collection_entity)
-
-        await self.collection_repo.async_session.commit()
+        await self.uow.commit()
         return created_collection
 
 
@@ -28,8 +30,7 @@ class CollectionService:
         updated_collection = await self.collection_repo.update(user_id, collection_id, update_collection)
         if updated_collection is None:
             raise NotFoundError(detail="Collection not found")
-
-        await self.collection_repo.async_session.commit()
+        await self.uow.commit()
         return updated_collection
 
 
@@ -49,8 +50,8 @@ class CollectionService:
         deleted = await self.collection_repo.delete(user_id, collection_id)
         if not deleted:
             raise NotFoundError(detail="Collection not found")
+        await self.uow.commit()
 
-        await self.collection_repo.async_session.commit()
 
 
     async def list_links(self, user_id: int, collection_id: int, skip: int = 0, limit: int = 10) -> List[LinkEntity]:
@@ -71,7 +72,7 @@ class CollectionService:
             raise NotFoundError(detail="Collection not found")
 
         await self.collection_repo.add_links(user_id, collection_id, link_ids)
-        await self.collection_repo.async_session.commit()
+        await self.uow.commit()
 
 
     async def remove_links(self, user_id: int, collection_id: int, link_ids: List[int]) -> None:
@@ -81,7 +82,7 @@ class CollectionService:
             raise NotFoundError(detail="Collection not found")
 
         await self.collection_repo.remove_links(user_id, collection_id, link_ids)
-        await self.collection_repo.async_session.commit()
+        await self.uow.commit()
 
 
     async def links_count(self, user_id: int, collection_id: int) -> int:
@@ -98,5 +99,5 @@ class CollectionService:
             query_string: str,
             skip: int = 0, limit:
             int = 10
-    ) -> list[CollectionEntity]:
+    ) -> List[CollectionEntity]:
         return await self.collection_repo.search_by_name(user_id, query_string, skip, limit)

@@ -5,24 +5,25 @@ from typing import List, Optional
 
 
 class CollectionModifyBase(BaseModel):
+    name: str = Field(min_length=1, max_length=100, description="Name cannot be empty")
+
     @field_validator("name")
     @classmethod
-    def name_not_empty(cls, v):
-        if not v or not v.strip():
+    def name_not_empty(cls, v: str) -> str:
+        if v is not None and (not v or not v.strip()):
             raise ValueError("Name cannot be empty or contain only spaces")
         return v
 
 class CollectionCreate(CollectionModifyBase):
-    name: str = Field(min_length=1, max_length=100, description="Name cannot be empty")
     description: Optional[str] = Field(default=None, min_length=1, max_length=200)
 
 class CollectionUpdate(CollectionModifyBase):
-    name: str = Field(min_length=1, max_length=100, description="Name cannot be empty")
     description: Optional[str] = Field(min_length=1, max_length=200)
 
 class CollectionPatch(CollectionModifyBase):
     name: Optional[str] = Field(default=None, min_length=1, max_length=100, description="Name cannot be empty")
     description: Optional[str] = Field(default=None, min_length=1, max_length=200)
+
 
 class Collection(BaseModel):
     id: int
@@ -30,7 +31,6 @@ class Collection(BaseModel):
     description: Optional[str]
     created_at: datetime
     updated_at: datetime
-    user_id: int
 
 class CountLinkInCollection(BaseModel):
     count: int

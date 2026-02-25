@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Optional
 
 
@@ -7,6 +8,8 @@ class UserEntity:
     id: int
     email: str
     password: str
+    created_at: datetime
+    updated_at: datetime
 
 @dataclass(frozen=True)
 class CreateUserEntity:

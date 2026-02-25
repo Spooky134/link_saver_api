@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, Union
 
-from app.core.constants import UNSET
+from app.core.types import UNSET, UnsetType
 
 
 @dataclass(frozen=True)
@@ -22,9 +22,8 @@ class CreateCollectionEntity:
 
 @dataclass(frozen=True)
 class UpdateCollectionEntity:
-    name: Union[str, None, object] = UNSET
-    description: Union[str, None, object] = UNSET
-
+    name: Union[str, None, UnsetType] = UNSET
+    description: Union[str, None, UnsetType] = UNSET
 
 @dataclass(frozen=True)
 class CollectionShortEntity:

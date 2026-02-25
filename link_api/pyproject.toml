@@ -21,6 +21,7 @@ dependencies = [
     "pwdlib[argon2] (>=0.3.0,<0.4.0)",
     "itsdangerous (>=2.2.0,<3.0.0)",
     "pyright[nodejs] (>=1.1.408,<2.0.0)",
+    "fastapi-cache2[redis] (>=0.2.2,<0.3.0)",
 ]
 
 

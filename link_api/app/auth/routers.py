@@ -17,8 +17,10 @@ async def register(user_register: UserRegister, auth_service: AuthServiceDep):
 
 @router.post("/login", response_model=AccessToken, status_code=status.HTTP_200_OK)
 async def login(response: Response, user_login: UserLogin, auth_service: AuthServiceDep):
-    user_login = UserEntity(**user_login.model_dump())
-    access_token = await auth_service.login(user_login)
+    access_token = await auth_service.login(
+        str(user_login.email),
+        user_login.password
+    )
     response.set_cookie(
         "access_token",
         access_token,

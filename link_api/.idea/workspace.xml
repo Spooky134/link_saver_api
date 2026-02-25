@@ -5,13 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e32877e-f260-4c08-a405-dc6523947033" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/core/dependecies.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/unit_of_work.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../alembic.ini" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/dependencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/dependencies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/routers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/collection/dependencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/dependencies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/collection/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/entities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/collection/repositories.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/repositories.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/collection/routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/routers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/collection/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/collection/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/services.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/common/mappers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/mappers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/constants.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/repositories.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/repositories.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/link/dependencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/dependencies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/link/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/entities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/link/repositories.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/repositories.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/link/routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/routers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/link/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/link/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/user/dependencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/dependencies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/user/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/entities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/user/repositories.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/repositories.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../requirements.txt" beforeDir="false" />
     </list>

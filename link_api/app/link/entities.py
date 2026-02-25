@@ -4,7 +4,7 @@ from typing import Optional, Union, List
 
 from app.collection.entities import CollectionShortEntity
 from app.link.enums import LinkType
-from app.core.constants import UNSET
+from app.core.types import UnsetType, UNSET
 
 
 @dataclass(frozen=True)
@@ -17,10 +17,10 @@ class CreateLinkEntity:
 
 @dataclass(frozen=True)
 class UpdateLinkEntity:
-    title: Union[str, None, object] = UNSET
-    description: Union[str, None, object] = UNSET
-    image_url: Union[str, None, object] = UNSET
-    link_type: Union[LinkType, object] = UNSET
+    title: Union[str, None, UnsetType] = UNSET
+    description: Union[str, None, UnsetType] = UNSET
+    image_url: Union[str, None, UnsetType] = UNSET
+    link_type: Union[LinkType, UnsetType] = UNSET
 
 @dataclass(frozen=True)
 class LinkEntity:

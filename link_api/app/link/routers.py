@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, status, Query
 from app.link.entities import UpdateLinkEntity
-from app.link.schemas import CreateLink, LinkWithCollections, Link, UpdateLink
+from app.link.schemas import CreateLink, LinkWithCollections, Link, PatchLink
 from app.link.dependencies import LinkServiceDep
 from app.link.enums import LinkType
 from app.auth.dependencies import CurrentUserDep
@@ -50,7 +50,7 @@ async def get_link(
 @router.patch("/{link_id}", response_model=Link)
 async def patch_link(
         link_id: int,
-        link: UpdateLink,
+        link: PatchLink,
         service: LinkServiceDep,
         current_user: CurrentUserDep
 ):

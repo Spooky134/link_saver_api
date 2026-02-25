@@ -1,13 +1,13 @@
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
+from starlette.responses import RedirectResponse
 
 from app.auth.dependencies import get_current_user
 from app.auth.schemas import UserLogin
 from app.auth.services import AuthService
 from app.config.project_config import settings
-from app.core.database import get_db_session
+from app.core.dependecies import get_uow
 from app.user.dependencies import get_user_repository
-from app.user.entities import UserEntity
 
 
 class AdminAuth(AuthenticationBackend):
@@ -19,13 +19,13 @@ class AdminAuth(AuthenticationBackend):
             password=form.get("password")
         )
 
-        async for async_session in get_db_session():
-            user_repo = await get_user_repository(async_session)
-            auth_service = AuthService(user_repo)
+        async for uow in get_uow():
+            user_repo = await get_user_repository(uow)
+            auth_service = AuthService(uow, user_repo)
             try:
-                user_entity = UserEntity(**user_data.model_dump())
                 access_token = await auth_service.login(
-                    user_login=user_entity
+                    email=str(user_data.email),
+                    password=user_data.password,
                 )
                 request.session.update({"token": access_token})
                 return True
@@ -37,16 +37,19 @@ class AdminAuth(AuthenticationBackend):
         request.session.clear()
         return True
 
-    async def authenticate(self, request: Request) -> bool:
+    async def authenticate(self, request: Request):
         token = request.session.get("token")
         if not token:
-            return False
-        async for async_session in get_db_session():
-            user_repo = await get_user_repository(async_session)
-            user = await get_current_user(token, user_repo)
-            if not user:
-                return False
-        return True
+            return RedirectResponse(request.url_for("admin:login"))
+        try:
+            async for uow in get_uow():
+                user_repo = await get_user_repository(uow)
+                user = await get_current_user(token, user_repo)
+                if not user:
+                    return False
+        except Exception:
+            # Если токен протух — просто гоним на логин, а не падаем в 500
+            return RedirectResponse(request.url_for("admin:login"))
 
 
 authentication_backend = AdminAuth(secret_key=settings.SECRET_KEY)

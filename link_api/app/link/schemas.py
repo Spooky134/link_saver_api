@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, HttpUrl, field_serializer
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from app.link.enums import LinkType
 
 
@@ -28,8 +28,8 @@ class Link(BaseModel):
     url: HttpUrl
     image_url: Optional[HttpUrl]
     link_type: LinkType
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
+    created_at: datetime
+    updated_at: datetime
 
 class LinkWithCollections(Link):
-    collections: Optional[list[CollectionInLink]]
+    collections: Optional[List[CollectionInLink]]

@@ -4,9 +4,11 @@ from typing import Optional
 
 @dataclass(frozen=True)
 class UserEntity:
-    id: Optional[int] = None
-    email: Optional[str] = None
-    password: Optional[str] = None
+    id: int
+    email: str
+    password: str
 
-    # links: list["LinkEntity"]
-    # collections: list["CollectionEntity"]
+@dataclass(frozen=True)
+class CreateUserEntity:
+    email: str
+    password: str

@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db_session
 from app.collection.repositories import CollectionRepository
 from app.collection.services import CollectionService
+from app.link.dependencies import get_link_repository
+from app.link.repositories import LinkRepository
 
 
 async def get_collection_repository(
@@ -13,9 +15,11 @@ async def get_collection_repository(
 
 async def get_collection_service(
         collection_repository: CollectionRepository = Depends(get_collection_repository),
+        link_repository: LinkRepository = Depends(get_link_repository)
 ) -> CollectionService:
     return CollectionService(
-        collection_repository=collection_repository
+        collection_repository=collection_repository,
+        link_repository=link_repository
     )
 
 CollectionServiceDep: type[CollectionService] = Annotated[CollectionService, Depends(get_collection_service)]

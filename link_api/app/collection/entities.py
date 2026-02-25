@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, Union
 
@@ -6,10 +6,19 @@ from app.core.constants import UNSET
 
 
 @dataclass(frozen=True)
+class CollectionEntity:
+    name: str
+    user_id: int
+
+    id: Optional[int] = None
+    description: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+@dataclass(frozen=True)
 class CreateCollectionEntity:
     name: str
     description: Optional[str] = None
-
 
 @dataclass(frozen=True)
 class UpdateCollectionEntity:
@@ -18,15 +27,6 @@ class UpdateCollectionEntity:
 
 
 @dataclass(frozen=True)
-class CollectionEntity:
-    id: Optional[int] = None
-    name: Optional[str] = None
-    description: Optional[str] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-    user_id: int = None
-    links: Optional[list["LinkEntity"]] = None
-
-@dataclass(frozen=True)
-class CollectionWithLinksEntity(CollectionEntity):
-    links: list["LinkEntity"] = field(default_factory=list)
+class CollectionShortEntity:
+    id: int
+    name: str

@@ -1,13 +1,18 @@
 from app.link.models import LinkModel
 from app.collection.models import CollectionModel
 from app.link.entities import LinkEntity, LinkWithCollectionsEntity
-from app.collection.entities import CollectionEntity, CollectionWithLinksEntity
+from app.collection.entities import CollectionEntity
 from app.core.mappers import BaseMapper
-from sqlalchemy import inspect
-
+from app.user.entities import UserEntity
+from app.user.models import UserModel
 
 
 class EntityMapper(BaseMapper):
+    @classmethod
+    def to_link(cls, model: LinkModel) -> LinkEntity:
+        data = cls.model_to_dict(model)
+        return LinkEntity(**data)
+
     @classmethod
     def to_link_with_collections(cls, model: LinkModel) -> LinkWithCollectionsEntity:
         data = cls.model_to_dict(model)
@@ -19,12 +24,11 @@ class EntityMapper(BaseMapper):
         return LinkWithCollectionsEntity(**data)
 
     @classmethod
-    def to_collection_with_links(cls, model: CollectionModel) -> CollectionWithLinksEntity:
+    def to_collection(cls, model: CollectionModel) -> CollectionEntity:
         data = cls.model_to_dict(model)
+        return CollectionEntity(**data)
 
-
-        data["links"] = [
-            LinkEntity(**cls.model_to_dict(m)) for m in model.links
-        ] if cls.is_loaded(model, 'links') else []
-
-        return CollectionWithLinksEntity(**data)
+    @classmethod
+    def to_user(cls, model: UserModel) -> UserEntity:
+        data = cls.model_to_dict(model)
+        return UserEntity(**data)

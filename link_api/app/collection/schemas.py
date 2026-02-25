@@ -1,14 +1,10 @@
-from pydantic import BaseModel, Field, field_validator, HttpUrl
+from pydantic import BaseModel, Field
 from datetime import datetime
-from app.link.enums import LinkType
 from pydantic import field_validator
-from typing import Any, List, Optional
+from typing import List, Optional
 
 
 class CollectionModifyBase(BaseModel):
-    name: str = Field(min_length=1, max_length=100, description="Name cannot be empty")
-    description: Optional[str] = Field(default=None, min_length=1, max_length=200)
-
     @field_validator("name")
     @classmethod
     def name_not_empty(cls, v):
@@ -17,13 +13,14 @@ class CollectionModifyBase(BaseModel):
         return v
 
 class CollectionCreate(CollectionModifyBase):
-    pass
+    name: str = Field(min_length=1, max_length=100, description="Name cannot be empty")
+    description: Optional[str] = Field(default=None, min_length=1, max_length=200)
 
-class CollectionUpdateFull(CollectionModifyBase):
+class CollectionUpdate(CollectionModifyBase):
     name: str = Field(min_length=1, max_length=100, description="Name cannot be empty")
     description: Optional[str] = Field(min_length=1, max_length=200)
 
-class CollectionUpdate(CollectionModifyBase):
+class CollectionPatch(CollectionModifyBase):
     name: Optional[str] = Field(default=None, min_length=1, max_length=100, description="Name cannot be empty")
     description: Optional[str] = Field(default=None, min_length=1, max_length=200)
 
@@ -33,47 +30,13 @@ class Collection(BaseModel):
     description: Optional[str]
     created_at: datetime
     updated_at: datetime
-
-class CollectionWithLinks(BaseModel):
-    links: list["LinkInCollection"]
-
-class LinkInCollection(BaseModel):
-    id: int
-    title: str
-    url: HttpUrl
-    link_type: LinkType
+    user_id: int
 
 class CountLinkInCollection(BaseModel):
     count: int
 
 class AddLinksToCollection(BaseModel):
-    link_ids: list[int]
+    link_ids: List[int]
 
 class RemoveLinksFromCollection(BaseModel):
-    link_ids: list[int]
-
-
-
-#
-# def validate_ids_field(field_name: str):
-#     """Декоратор для конвертации строковых ID в int в указанном поле"""
-#
-    # def decorator(cls):
-    #     @field_validator(field_name, mode='before')
-    #     @classmethod
-    #     def convert_ids(cls, v: Any) -> Optional[List[int]]:
-    #         if v is None:
-    #             return None
-    #         if isinstance(v, list):
-    #             return [
-    #                 int(item) if isinstance(item, str) and item.isdigit()
-    #                 else item
-    #                 for item in v
-    #             ]
-    #         return v
-    #
-    #     # Динамически добавляем валидатор к классу
-    #     setattr(cls, f"_validate_{field_name}", convert_ids)
-    #     return cls
-    #
-    # return decorator
+    link_ids: List[int]

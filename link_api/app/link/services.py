@@ -1,4 +1,4 @@
-from app.link.entities import LinkEntity, UpdateLinkEntity
+from app.link.entities import LinkEntity, UpdateLinkEntity, LinkWithCollectionsEntity
 from app.link.enums import LinkType
 from app.link.repositories import LinkRepository
 from app.link.utils.async_link_parser import AsyncLinkInfoParser
@@ -36,7 +36,7 @@ class LinkService:
 
         await self.link_repo.async_session.commit()
 
-    async def get_link(self, user_id: int, link_id: int) -> LinkEntity:
+    async def get_link(self, user_id: int, link_id: int) -> LinkWithCollectionsEntity:
         link = await self.link_repo.get_with_collections(user_id, link_id)
 
         if not link:
@@ -44,8 +44,8 @@ class LinkService:
 
         return link
 
-    async def get_all_links(self, user_id: int, skip: int = 0, limit: int = 10) -> list[LinkEntity]:
+    async def list_links(self, user_id: int, skip: int = 0, limit: int = 10) -> list[LinkEntity]:
         return await self.link_repo.list(user_id, skip, limit)
     
-    async def get_links_by_type(self, user_id: int, link_type: LinkType, skip: int = 0, limit: int = 10) -> list[LinkEntity]:
+    async def list_by_type(self, user_id: int, link_type: LinkType, skip: int = 0, limit: int = 10) -> list[LinkEntity]:
         return await self.link_repo.list_by_type(user_id, link_type, skip, limit)

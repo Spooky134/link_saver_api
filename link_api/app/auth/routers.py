@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response
 from fastapi import status
 from app.auth.schemas import UserRegister, UserLogin, AccessToken, MessageResponse
-from app.user.entities import UserEntity
+from app.user.entities import UserEntity, CreateUserEntity
 from app.auth.dependencies import AuthServiceDep
 
 
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=MessageResponse, status_code=status.HTTP_201_CREATED)
 async def register(user_register: UserRegister, auth_service: AuthServiceDep):
-    user_register = UserEntity(**user_register.model_dump())
+    user_register = CreateUserEntity(**user_register.model_dump())
     await auth_service.register(user_register)
     return {"message": "User registered successfully"}
 

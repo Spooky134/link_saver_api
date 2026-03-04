@@ -7,6 +7,10 @@ class ValidationError(BaseAppException):
     def __init__(self, detail: str = "Validation error"):
         super().__init__(detail, status_code=400)
 
+class ObjectAlreadyExists(BaseAppException):
+    def __init__(self, detail: str = "Object already exists"):
+        super().__init__(detail, status_code=409)
+
 class NotFoundError(BaseAppException):
     def __init__(self, detail: str = "Object not found"):
         super().__init__(detail, status_code=404)

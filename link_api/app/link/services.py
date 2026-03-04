@@ -3,7 +3,7 @@ from app.link.entities import LinkEntity, UpdateLinkEntity, LinkWithCollectionsE
 from app.link.enums import LinkType
 from app.link.repositories import LinkRepository
 from app.link.utils.async_link_parser import AsyncLinkInfoParser
-from app.core.exceptions import ValidationError, NotFoundError
+from app.core.exceptions import NotFoundError, ObjectAlreadyExists
 
 
 class LinkService:
@@ -15,7 +15,7 @@ class LinkService:
     #TODO добавлять ссылку в бд сразу а парсить в фоне!!!!
     async def create_link(self, user_id: int, link_url: str) -> LinkEntity:
         if await self.link_repo.exists_by_url(user_id, link_url):
-            raise ValidationError(detail="Link already exists")
+            raise ObjectAlreadyExists("Link with this url already exists")
 
         create_link_entity = await self.link_parser.fetch(link_url)
 

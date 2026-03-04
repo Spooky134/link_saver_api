@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from pydantic import field_validator
-from typing import List, Optional
+from typing import List, Optional, Set
 
 
 class CollectionModifyBase(BaseModel):
@@ -36,7 +36,11 @@ class CountLinkInCollection(BaseModel):
     count: int
 
 class AddLinksToCollection(BaseModel):
-    link_ids: List[int]
+    link_ids: Set[int]
 
 class RemoveLinksFromCollection(BaseModel):
-    link_ids: List[int]
+    link_ids: Set[int]
+
+class PatchLinksInCollection(BaseModel):
+    add_ids: Optional[Set[int]] = None
+    remove_ids: Optional[Set[int]] = None

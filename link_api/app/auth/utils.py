@@ -13,9 +13,9 @@ def get_password_hash(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return password_hash.verify(plain_password, hashed_password)
 
-def create_access_token(data: dict) -> str:
+def create_access_token(data: dict, expire_sec: int = 30) -> str:
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=30)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=expire_sec)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         claims=to_encode,

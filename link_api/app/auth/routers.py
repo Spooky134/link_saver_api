@@ -2,8 +2,7 @@ from fastapi import APIRouter, Response
 from fastapi import status
 from app.auth.schemas import UserRegister, UserLogin, AccessToken, MessageResponse
 from app.user.entities import UserEntity, CreateUserEntity
-from app.auth.dependencies import AuthServiceDep
-
+from app.auth.dependencies import AuthServiceDep, CurrentUserDep
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -29,8 +28,8 @@ async def login(response: Response, user_login: UserLogin, auth_service: AuthSer
     return {"access_token": access_token}
 
 
-@router.post("/logout", response_model=MessageResponse, status_code=status.HTTP_200_OK)
-async def logout(response: Response):
+@router.post("/logout", response_model=MessageResponse,  status_code=status.HTTP_200_OK)
+async def logout(response: Response, current_user: CurrentUserDep):
     response.delete_cookie("access_token")
     return {"message": "Logged out"}
 

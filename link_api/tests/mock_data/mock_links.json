@@ -1,0 +1,101 @@
+[
+  {
+    "id": 1,
+    "url": "https://example.com",
+    "title": "Example Website",
+    "description": "General example website.",
+    "image_url": "https://example.com/image.png",
+    "link_type": "BOOK",
+    "created_at": "2026-02-20T09:05:00+00:00",
+    "updated_at": "2026-02-20T09:05:00+00:00",
+    "user_id": 1
+  },
+  {
+    "id": 2,
+    "url": "https://github.com",
+    "title": "GitHub",
+    "description": "Code hosting platform.",
+    "image_url": "https://github.com/logo.png",
+    "link_type": "WEBSITE",
+    "created_at": "2026-02-20T09:06:00+00:00",
+    "updated_at": "2026-02-20T09:06:00+00:00",
+    "user_id": 1
+  },
+  {
+    "id": 3,
+    "url": "https://youtube.com/watch?v=abc123",
+    "title": "Tech Review Video",
+    "description": "Latest tech review.",
+    "image_url": "https://img.youtube.com/vi/abc123/0.jpg",
+    "link_type": "VIDEO",
+    "created_at": "2026-02-20T09:07:00+00:00",
+    "updated_at": "2026-02-20T09:07:00+00:00",
+    "user_id": 1
+  },
+  {
+    "id": 4,
+    "url": "https://medium.com/some-article",
+    "title": "Interesting Article",
+    "description": "A deep dive into software architecture.",
+    "image_url": null,
+    "link_type": "ARTICLE",
+    "created_at": "2026-02-21T10:20:00+00:00",
+    "updated_at": "2026-02-21T10:20:00+00:00",
+    "user_id": 2
+  },
+  {
+    "id": 5,
+    "url": "https://stackoverflow.com/questions/123456",
+    "title": "StackOverflow Question",
+    "description": "How to use SQLAlchemy relationships?",
+    "image_url": null,
+    "link_type": "WEBSITE",
+    "created_at": "2026-02-21T10:22:00+00:00",
+    "updated_at": "2026-02-21T10:22:00+00:00",
+    "user_id": 2
+  },
+  {
+    "id": 6,
+    "url": "https://docs.python.org/3/",
+    "title": "Python Documentation",
+    "description": "Official Python docs.",
+    "image_url": null,
+    "link_type": "MUSIC",
+    "created_at": "2026-02-21T10:25:00+00:00",
+    "updated_at": "2026-02-21T10:25:00+00:00",
+    "user_id": 2
+  },
+  {
+    "id": 7,
+    "url": "https://news.ycombinator.com",
+    "title": "Hacker News",
+    "description": "Tech news aggregator.",
+    "image_url": null,
+    "link_type": "WEBSITE",
+    "created_at": "2026-02-22T11:35:00+00:00",
+    "updated_at": "2026-02-22T11:35:00+00:00",
+    "user_id": 3
+  },
+  {
+    "id": 8,
+    "url": "https://arxiv.org/abs/1234.5678",
+    "title": "Research Paper",
+    "description": "Machine learning research paper.",
+    "image_url": null,
+    "link_type": "ARTICLE",
+    "created_at": "2026-02-22T11:36:00+00:00",
+    "updated_at": "2026-02-22T11:36:00+00:00",
+    "user_id": 3
+  },
+  {
+    "id": 9,
+    "url": "https://vimeo.com/12345678",
+    "title": "Creative Video",
+    "description": "Short creative film.",
+    "image_url": null,
+    "link_type": "VIDEO",
+    "created_at": "2026-02-22T11:38:00+00:00",
+    "updated_at": "2026-02-22T11:38:00+00:00",
+    "user_id": 3
+  }
+]

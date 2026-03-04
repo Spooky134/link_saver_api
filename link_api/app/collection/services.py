@@ -1,11 +1,13 @@
-from typing import List
+from typing import List, Set
 
+from app.core.types import UNSET
 from app.core.unit_of_work import UnitOfWork
 from app.link.entities import LinkEntity
 from app.collection.repositories import CollectionRepository
 from app.collection.entities import CollectionEntity, CreateCollectionEntity, UpdateCollectionEntity
-from app.core.exceptions import ValidationError, NotFoundError
+from app.core.exceptions import NotFoundError, ObjectAlreadyExists
 from app.link.repositories import LinkRepository
+
 
 
 class CollectionService:
@@ -16,7 +18,7 @@ class CollectionService:
 
     async def create_collection(self, user_id: int, collection_entity: CreateCollectionEntity) -> CollectionEntity:
         if await self.collection_repo.exists_by_name(user_id, collection_entity.name):
-            raise ValidationError(detail="Collection with this name already exists")
+            raise ObjectAlreadyExists(detail="Collection with this name already exists")
 
         created_collection = await self.collection_repo.add(user_id, collection_entity)
         await self.uow.commit()
@@ -24,8 +26,9 @@ class CollectionService:
 
 
     async def update_collection(self, user_id: int, collection_id: int, update_collection: UpdateCollectionEntity) -> CollectionEntity:
-        if await self.collection_repo.exists_by_name(user_id, update_collection.name):
-            raise NotFoundError(detail="Collection with this name already exists")
+        if update_collection.name is not UNSET:
+            if await self.collection_repo.exists_by_name(user_id, update_collection.name):
+                raise NotFoundError(detail="Collection with this name already exists")
 
         updated_collection = await self.collection_repo.update(user_id, collection_id, update_collection)
         if updated_collection is None:
@@ -53,7 +56,6 @@ class CollectionService:
         await self.uow.commit()
 
 
-
     async def list_links(self, user_id: int, collection_id: int, skip: int = 0, limit: int = 10) -> List[LinkEntity]:
         exists = await self.collection_repo.exists(user_id, collection_id)
 
@@ -65,25 +67,23 @@ class CollectionService:
         return links
 
 
-    async def attach_links(self, user_id: int, collection_id: int, link_ids: List[int]) -> None:
+    async def update_links(
+            self,
+            user_id: int,
+            collection_id: int,
+            add_ids: Set[int],
+            remove_ids: Set[int]
+    ) -> None:
         exists = await self.collection_repo.exists(user_id, collection_id)
-
         if not exists:
             raise NotFoundError(detail="Collection not found")
 
-        await self.collection_repo.add_links(user_id, collection_id, link_ids)
+        if add_ids:
+            await self.collection_repo.add_links(user_id, collection_id, add_ids)
+        if remove_ids:
+            await self.collection_repo.remove_links(user_id, collection_id, remove_ids)
+
         await self.uow.commit()
-
-
-    async def remove_links(self, user_id: int, collection_id: int, link_ids: List[int]) -> None:
-        exists = await self.collection_repo.exists(user_id, collection_id)
-
-        if not exists:
-            raise NotFoundError(detail="Collection not found")
-
-        await self.collection_repo.remove_links(user_id, collection_id, link_ids)
-        await self.uow.commit()
-
 
     async def links_count(self, user_id: int, collection_id: int) -> int:
         count = await self.collection_repo.count_links(user_id, collection_id)

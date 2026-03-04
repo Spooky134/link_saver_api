@@ -1,11 +1,14 @@
 from typing import List
 
 from fastapi import APIRouter, status, Query
+from fastapi_versioning import VersionedFastAPI, version
+from app.core.dependecies import PaginationDep
 from app.link.entities import UpdateLinkEntity
 from app.link.schemas import CreateLink, LinkWithCollections, Link, PatchLink
 from app.link.dependencies import LinkServiceDep
 from app.link.enums import LinkType
 from app.auth.dependencies import CurrentUserDep
+from fastapi_cache.decorator import cache
 
 
 
@@ -13,14 +16,24 @@ router = APIRouter(prefix="/links", tags=["links"])
 
 
 @router.get("/type", response_model=List[Link])
+@cache(expire=30)
 async def list_by_type(
         service: LinkServiceDep,
         current_user: CurrentUserDep,
-        link_type: LinkType = Query(), skip: int = 0, limit: int = 10):
-    return await service.list_by_type(current_user.id, link_type, skip, limit)
+        pagination: PaginationDep,
+        link_type: LinkType = Query(),
+        ):
+    return await service.list_by_type(
+        current_user.id,
+        link_type,
+        pagination.skip,
+        pagination.limit
+    )
 
 
-@router.post("/", response_model=Link, status_code=status.HTTP_201_CREATED)
+
+
+@router.post("", response_model=Link, status_code=status.HTTP_201_CREATED)
 async def create_link(
         link: CreateLink,
         service: LinkServiceDep,
@@ -29,13 +42,14 @@ async def create_link(
     return await service.create_link(current_user.id, str(link.url))
 
 
-@router.get("/", response_model=List[Link])
+@router.get("", response_model=List[Link])
+@cache(expire=30)
 async def list_links(
         service: LinkServiceDep,
         current_user: CurrentUserDep,
-        skip: int = 0, limit: int = 10
+        pagination: PaginationDep,
 ):
-    return await service.list_links(current_user.id, skip, limit)
+    return await service.list_links(current_user.id, pagination.skip, pagination.limit)
 
 
 @router.get("/{link_id}", response_model=LinkWithCollections)

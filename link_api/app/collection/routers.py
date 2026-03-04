@@ -9,27 +9,34 @@ from app.collection.schemas import (
     CollectionPatch,
     CollectionUpdate,
     CountLinkInCollection,
-    AddLinksToCollection,
-    RemoveLinksFromCollection
+    PatchLinksInCollection,
 )
+from app.core.dependecies import PaginationDep
 from app.link.schemas import Link
 from app.collection.dependencies import CollectionServiceDep
 from app.auth.dependencies import CurrentUserDep
+from fastapi_cache.decorator import cache
 
 router = APIRouter(prefix="/collections", tags=["collections"])
 
 
 @router.get("/search", response_model=List[Collection])
+@cache(expire=30)
 async def search_collection(
         service: CollectionServiceDep,
         current_user: CurrentUserDep,
+        pagination: PaginationDep,
         name: str = Query(..., min_length=1, examples=["String"]),
-        skip: int = 0, limit: int = 10
 ):
-    return await service.search_by_name(current_user.id, name, skip=skip, limit=limit)
+    return await service.search_by_name(
+        current_user.id,
+        name,
+        skip=pagination.skip,
+        limit=pagination.limit
+    )
 
 
-@router.post("/", response_model=Collection, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=Collection, status_code=status.HTTP_201_CREATED)
 async def create_collection(
         collection_create: CollectionCreate,
         service: CollectionServiceDep,
@@ -39,14 +46,18 @@ async def create_collection(
     return await service.create_collection(current_user.id, new_collection)
 
 
-@router.get("/", response_model=List[Collection])
+@router.get("", response_model=List[Collection])
+@cache(expire=30)
 async def list_collections(
         service: CollectionServiceDep,
         current_user: CurrentUserDep,
-        skip: int = 0,
-        limit: int = 10
+        pagination: PaginationDep,
 ):
-    return await service.list_collections(current_user.id, skip, limit)
+    return await service.list_collections(
+        current_user.id,
+        pagination.skip,
+        pagination.limit
+    )
 
 
 @router.get("/{collection_id}", response_model=Collection)
@@ -90,6 +101,7 @@ async def delete_collection(
 
 
 @router.get("/{collection_id}/links/count", response_model=CountLinkInCollection)
+@cache(expire=30)
 async def get_collection_links_count(
         collection_id: int,
         service: CollectionServiceDep,
@@ -100,31 +112,31 @@ async def get_collection_links_count(
 
 
 @router.get("/{collection_id}/links", response_model=List[Link])
+@cache(expire=30)
 async def get_collection_list_links(
         collection_id: int,
         service: CollectionServiceDep,
         current_user: CurrentUserDep,
-        skip: int = 0,
-        limit: int = 10
+        pagination: PaginationDep,
 ):
-    return await service.list_links(current_user.id, collection_id, skip, limit)
+    return await service.list_links(
+        current_user.id,
+        collection_id,
+        pagination.skip,
+        pagination.limit
+    )
 
 
-@router.post("/{collection_id}/links", status_code=status.HTTP_204_NO_CONTENT)
-async def add_links_to_collection(
+@router.patch("/{collection_id}/links", status_code=status.HTTP_204_NO_CONTENT)
+async def patch_links_in_collection(
         collection_id: int,
-        add_links_to_col: AddLinksToCollection,
+        patch_links: PatchLinksInCollection,
         service: CollectionServiceDep,
         current_user: CurrentUserDep
 ):
-    await service.attach_links(current_user.id, collection_id, add_links_to_col.link_ids)
-
-
-@router.delete("/{collection_id}/links", status_code=status.HTTP_204_NO_CONTENT)
-async def remove_links_from_collection(
-        collection_id: int,
-        remove_links_from_col: RemoveLinksFromCollection,
-        service: CollectionServiceDep,
-        current_user: CurrentUserDep
-):
-    await service.remove_links(current_user.id, collection_id, remove_links_from_col.link_ids)
+    await service.update_links(
+        current_user.id,
+        collection_id,
+        patch_links.add_ids,
+        patch_links.remove_ids
+    )

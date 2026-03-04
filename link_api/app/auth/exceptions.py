@@ -18,5 +18,9 @@ class IncorrectFormatToken(BaseAppException):
         super().__init__(message, status_code=401)
 
 class UserNotPresent(BaseAppException):
-    def __init__(self, message: str = 'Error'):
+    def __init__(self, message: str = 'Invalid email or password.'):
         super().__init__(message, status_code=401)
+
+class UserExistsError(BaseAppException):
+    def __init__(self, message: str = "User with this email already exists"):
+        super().__init__(message, status_code=409)

@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Set
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import func, select
@@ -52,7 +52,7 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
             return None
         return self._to_entity(orm_object)
 
-    async def add_links(self, user_id: int, collection_id, link_ids: List[int]) -> None:
+    async def add_links(self, user_id: int, collection_id: int, link_ids: Set[int]) -> None:
         if not link_ids:
             return
 
@@ -69,7 +69,10 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
 
         link_query = (
             select(LinkModel)
-            .where(LinkModel.id.in_(link_ids), self.model.user_id == user_id)
+            .where(
+                LinkModel.id.in_(link_ids),
+                LinkModel.user_id == user_id
+            )
         )
         links_res = await self._async_session.execute(link_query)
         links_to_add = links_res.scalars().all()
@@ -82,7 +85,7 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
 
         await self._async_session.flush()
 
-    async def remove_links(self, user_id: int, collection_id: int, link_ids: List[int]) -> None:
+    async def remove_links(self, user_id: int, collection_id: int, link_ids: Set[int]) -> None:
         if not link_ids:
             return
 
@@ -97,10 +100,8 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
         if collection is None:
             return
 
-        links_to_remove_ids = set(link_ids)
-
         collection.links = [
-            link for link in collection.links if link.id not in links_to_remove_ids
+            link for link in collection.links if link.id not in link_ids
         ]
 
         await self._async_session.flush()

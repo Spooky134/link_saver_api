@@ -2,11 +2,11 @@ from dataclasses import replace
 
 from app.core.unit_of_work import UnitOfWork
 from app.user.repositories import UserRepository
-from app.user.exceptions import UserExistsError, UserNotExistsError
+from app.auth.exceptions import UserExistsError
 from app.auth.utils import get_password_hash, verify_password, create_access_token
 from app.core.logger import get_logger
-from app.auth.exceptions import PasswordNotMatch
-from app.user.entities import UserEntity, CreateUserEntity
+from app.auth.exceptions import PasswordNotMatch, UserNotPresent
+from app.user.entities import CreateUserEntity
 
 logger = get_logger(__name__)
 
@@ -30,7 +30,7 @@ class AuthService:
     async def login(self, email: str, password: str) -> str:
         user = await self.user_repo.get_by_email(email)
         if not user:
-            raise UserNotExistsError()
+            raise UserNotPresent()
         password_is_valid = verify_password(password, user.password)
         if not password_is_valid:
             raise PasswordNotMatch()

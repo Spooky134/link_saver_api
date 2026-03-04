@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.responses import JSONResponse
 from sqladmin import Admin
-
+from fastapi_versioning import VersionedFastAPI
 from app.admin.auth import authentication_backend
 from app.auth.routers import router as auth_router
 from app.collection.admin import CollectionAdmin
@@ -17,7 +17,27 @@ from app.user.admin import UserAdmin
 from app.core.exceptions import BaseAppException
 from app.user.routers import router as user_router
 
-app = FastAPI(title=settings.SERVICE_NAME, lifespan=lifespan)
+
+app = FastAPI(
+    title=settings.SERVICE_NAME,
+    lifespan=lifespan,
+    root_path="/api/v1"
+)
+
+app.include_router(root_router)
+app.include_router(auth_router)
+app.include_router(user_router)
+app.include_router(link_router)
+app.include_router(collection_router)
+
+
+# app = VersionedFastAPI(
+#     app,
+#     version_format='{major}',
+#     prefix_format='/v{major}',
+#     description='Greet users with a nice message',
+#     root_path="/api"
+# )
 
 @app.exception_handler(BaseAppException)
 async def app_exception_handler(request: Request, exc: BaseAppException):
@@ -26,15 +46,6 @@ async def app_exception_handler(request: Request, exc: BaseAppException):
         content={"detail": exc.detail}
     )
 
-api_v1_router = APIRouter(prefix="/v1", tags=["v1"])
-
-api_v1_router.include_router(root_router)
-api_v1_router.include_router(auth_router)
-api_v1_router.include_router(user_router)
-api_v1_router.include_router(link_router)
-api_v1_router.include_router(collection_router)
-
-app.include_router(api_v1_router, prefix="/api")
 
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 admin.add_view(UserAdmin)

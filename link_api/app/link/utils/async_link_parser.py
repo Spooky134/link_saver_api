@@ -23,7 +23,6 @@ class AsyncLinkInfoParser:
         self._og_data = None
 
     async def fetch(self, url: str) -> CreateLinkEntity:
-        """Fetch and parse URL content."""
         if not url:
             raise ValueError("URL cannot be empty")
         self._url = url

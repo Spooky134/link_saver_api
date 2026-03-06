@@ -1,8 +1,8 @@
-from fastapi import Depends, APIRouter, HTTPException, status, Query
+from fastapi import APIRouter
 
 router = APIRouter(tags=["root"])
 
-@router.get("/", summary="Root endpoint")
+@router.get("/root", summary="Root endpoint")
 def root():
     return {
         "service": "Link storage API",

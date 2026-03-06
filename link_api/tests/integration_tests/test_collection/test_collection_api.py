@@ -11,7 +11,7 @@ import pytest
     ({"name": "Reading", "skip": -1, "limit": 100}, 0, status.HTTP_422_UNPROCESSABLE_CONTENT),
 ])
 async def test_search_collection(params, expected_count, status_code, authenticated_async_client: AsyncClient):
-    response = await authenticated_async_client.get("api/v1/collections/search", params=params)
+    response = await authenticated_async_client.get("v1/collections/search", params=params)
 
     assert response.status_code == status_code
 
@@ -25,7 +25,7 @@ async def test_search_collection(params, expected_count, status_code, authentica
     ({"skip": 5, "limit": 10}, 0),
 ])
 async def test_list_collection(params, expected_count, authenticated_async_client: AsyncClient):
-    response = await authenticated_async_client.get("api/v1/collections", params=params)
+    response = await authenticated_async_client.get("v1/collections", params=params)
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response.json(), list)
@@ -37,7 +37,7 @@ async def test_list_collection(params, expected_count, authenticated_async_clien
     (999, status.HTTP_404_NOT_FOUND),
 ])
 async def test_get_collection(collection_id, status_code, authenticated_async_client: AsyncClient):
-    response = await authenticated_async_client.get(f"api/v1/collections/{collection_id}")
+    response = await authenticated_async_client.get(f"v1/collections/{collection_id}")
 
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
@@ -54,7 +54,7 @@ async def test_get_collection_links_count(
         status_code,
         authenticated_async_client: AsyncClient
 ):
-    response = await authenticated_async_client.get(f"api/v1/collections/{collection_id}/links/count")
+    response = await authenticated_async_client.get(f"v1/collections/{collection_id}/links/count")
 
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
@@ -71,7 +71,7 @@ async def test_get_collection_list_links(
         status_code,
         authenticated_async_client: AsyncClient
 ):
-    response = await authenticated_async_client.get(f"api/v1/collections/{collection_id}/links")
+    response = await authenticated_async_client.get(f"v1/collections/{collection_id}/links")
 
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
@@ -94,7 +94,7 @@ async def test_update_collection(
         authenticated_async_client: AsyncClient):
     collection_id = 4
     response = await authenticated_async_client.put(
-        f"api/v1/collections/{collection_id}",
+        f"v1/collections/{collection_id}",
         json=update_data
     )
 
@@ -123,7 +123,7 @@ async def test_patch_collection(
         authenticated_async_client: AsyncClient):
     collection_id = 4
     response = await authenticated_async_client.patch(
-        f"api/v1/collections/{collection_id}",
+        f"v1/collections/{collection_id}",
         json=patch_data
     )
 
@@ -149,7 +149,7 @@ async def test_patch_links_in_collection_negative(
 ):
 
     response = await authenticated_async_client.patch(
-        f"api/v1/collections/{collection_id}/links",
+        f"v1/collections/{collection_id}/links",
         json=json_data
     )
 
@@ -157,7 +157,7 @@ async def test_patch_links_in_collection_negative(
 
     if response.status_code == status.HTTP_204_NO_CONTENT:
         get_response = await authenticated_async_client.get(
-            f"api/v1/collections/{collection_id}/links",
+            f"v1/collections/{collection_id}/links",
             params={"skip": 0, "limit": 10}
         )
         collection_data = get_response.json()
@@ -184,14 +184,14 @@ async def test_patch_links_in_collection(
 ):
 
     response = await authenticated_async_client.patch(
-        f"api/v1/collections/{collection_id}/links",
+        f"v1/collections/{collection_id}/links",
         json=json_data
     )
 
     assert response.status_code == status_code
 
     get_response = await authenticated_async_client.get(
-        f"api/v1/collections/{collection_id}/links",
+        f"v1/collections/{collection_id}/links",
         params={"skip": 0, "limit": 10}
     )
 
@@ -218,7 +218,7 @@ async def test_patch_links_in_collection(
     ])
 async def test_create_collection(create_data, status_code, authenticated_async_client: AsyncClient):
     response = await authenticated_async_client.post(
-        "api/v1/collections",
+        "v1/collections",
         json=create_data
     )
     assert response.status_code == status_code
@@ -229,7 +229,7 @@ async def test_create_collection(create_data, status_code, authenticated_async_c
             assert result[key] == value
 
         response = await authenticated_async_client.get(
-            f"api/v1/collections/{result['id']}"
+            f"v1/collections/{result['id']}"
         )
         assert response.status_code == status.HTTP_200_OK
 
@@ -237,10 +237,10 @@ async def test_create_collection(create_data, status_code, authenticated_async_c
 async def test_delete_collection(authenticated_async_client: AsyncClient):
     collection_id = 4
     response = await authenticated_async_client.delete(
-        f"api/v1/collections/{collection_id}"
+        f"v1/collections/{collection_id}"
     )
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
-    response = await authenticated_async_client.get(f"api/v1/collections/{collection_id}")
+    response = await authenticated_async_client.get(f"v1/collections/{collection_id}")
 
     assert response.status_code == status.HTTP_404_NOT_FOUND

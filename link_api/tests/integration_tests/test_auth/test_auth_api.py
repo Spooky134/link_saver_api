@@ -10,7 +10,7 @@ import pytest
     ("test", "test", status.HTTP_422_UNPROCESSABLE_CONTENT)
 ])
 async def test_register(email, password, status_code, async_client: AsyncClient):
-    response = await async_client.post("api/v1/auth/register", json={
+    response = await async_client.post("v1/auth/register", json={
         "email": email,
         "password": password
     })
@@ -32,7 +32,7 @@ async def test_register(email, password, status_code, async_client: AsyncClient)
     ("test", "test", status.HTTP_422_UNPROCESSABLE_CONTENT),
 ])
 async def test_login(email, password, status_code, async_client: AsyncClient):
-    response = await async_client.post("api/v1/auth/login", json={
+    response = await async_client.post("v1/auth/login", json={
         "email": email,
         "password": password
     })
@@ -54,7 +54,7 @@ async def test_login(email, password, status_code, async_client: AsyncClient):
 ])
 async def test_logout(is_authenticated: bool, status_code, async_client: AsyncClient):
     if is_authenticated:
-        await async_client.post("api/v1/auth/login", json={
+        await async_client.post("v1/auth/login", json={
             "email": "alice.smith@example.com",
             "password": "test"
         })
@@ -62,7 +62,7 @@ async def test_logout(is_authenticated: bool, status_code, async_client: AsyncCl
     else:
         async_client.cookies.clear()
 
-    response = await async_client.post("api/v1/auth/logout")
+    response = await async_client.post("v1/auth/logout")
 
     assert response.status_code == status_code
 

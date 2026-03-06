@@ -18,3 +18,5 @@ class NotFoundError(BaseAppException):
 class PermissionDeniedError(BaseAppException):
     def __init__(self, detail: str = "Access denied"):
         super().__init__(detail, status_code=403)
+
+

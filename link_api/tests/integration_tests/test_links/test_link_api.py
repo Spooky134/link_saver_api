@@ -3,9 +3,9 @@ from fastapi import status
 import pytest
 
 @pytest.mark.parametrize("method, url", [
-    ("get", "api/v1/links/1"),
-    ("patch", "api/v1/links/1"),
-    ("delete", "api/v1/links/1"),
+    ("get", "v1/links/1"),
+    ("patch", "v1/links/1"),
+    ("delete", "v1/links/1"),
 ])
 async def test_access_other_user_link(method, url, authenticated_async_client: AsyncClient):
     call = getattr(authenticated_async_client, method)
@@ -22,7 +22,7 @@ async def test_access_other_user_link(method, url, authenticated_async_client: A
     ({"skip": 5, "limit": 10}, 0),
 ])
 async def test_list(params, expected_count, authenticated_async_client: AsyncClient):
-    response = await authenticated_async_client.get("api/v1/links", params=params)
+    response = await authenticated_async_client.get("v1/links", params=params)
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response.json(), list)
@@ -36,7 +36,7 @@ async def test_list(params, expected_count, authenticated_async_client: AsyncCli
     ({"link_type": "article", "skip": 0, "limit": 10}, 1, status.HTTP_200_OK),
 ])
 async def test_list_by_type(params, status_code, expected_count, authenticated_async_client: AsyncClient):
-    response = await authenticated_async_client.get("api/v1/links/type", params=params)
+    response = await authenticated_async_client.get("v1/links/type", params=params)
 
     assert response.status_code == status_code
 
@@ -50,7 +50,7 @@ async def test_list_by_type(params, status_code, expected_count, authenticated_a
     (999, status.HTTP_404_NOT_FOUND),
 ])
 async def test_get_link(link_id: int, status_code, authenticated_async_client: AsyncClient):
-    response = await authenticated_async_client.get(f"api/v1/links/{link_id}")
+    response = await authenticated_async_client.get(f"v1/links/{link_id}")
 
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
@@ -75,7 +75,7 @@ async def test_patch_link(
         authenticated_async_client: AsyncClient):
     link_id = 4
     response = await authenticated_async_client.patch(
-        f"api/v1/links/{link_id}",
+        f"v1/links/{link_id}",
         json=update_data
     )
 
@@ -91,7 +91,7 @@ async def test_patch_link_with_non_existent_id(authenticated_async_client: Async
     link_id = 999
     link_data = {}
     response = await authenticated_async_client.patch(
-        f"api/v1/links/{link_id}",
+        f"v1/links/{link_id}",
         json=link_data
     )
 
@@ -108,7 +108,7 @@ async def test_create_link(url, status_code, authenticated_async_client: AsyncCl
         "url": url,
     }
     response = await authenticated_async_client.post(
-        "api/v1/links",
+        "v1/links",
         json=json_body
     )
 
@@ -119,7 +119,7 @@ async def test_create_link(url, status_code, authenticated_async_client: AsyncCl
         assert result["url"] == url
 
         response = await authenticated_async_client.get(
-            f"api/v1/links/{result['id']}"
+            f"v1/links/{result['id']}"
         )
 
         assert response.status_code == status.HTTP_200_OK
@@ -128,11 +128,11 @@ async def test_create_link(url, status_code, authenticated_async_client: AsyncCl
 async def test_delete_link(authenticated_async_client: AsyncClient):
     link_id = 4
     response = await authenticated_async_client.delete(
-        f"api/v1/links/{link_id}"
+        f"v1/links/{link_id}"
     )
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
-    response = await authenticated_async_client.get(f"api/v1/links/{link_id}")
+    response = await authenticated_async_client.get(f"v1/links/{link_id}")
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
 

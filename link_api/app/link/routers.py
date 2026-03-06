@@ -1,7 +1,6 @@
 from typing import List
 
 from fastapi import APIRouter, status, Query
-from fastapi_versioning import VersionedFastAPI, version
 from app.core.dependecies import PaginationDep
 from app.link.entities import UpdateLinkEntity
 from app.link.schemas import CreateLink, LinkWithCollections, Link, PatchLink

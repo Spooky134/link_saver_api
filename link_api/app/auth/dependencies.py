@@ -1,11 +1,11 @@
-from datetime import datetime, timezone
+
 from fastapi import Depends
-from jose import jwt, JWTError
+
 from typing import Annotated
 from app.auth.services import AuthService
-from app.config.project_config import settings
 from fastapi import Request
-from app.auth.exceptions import MissingToken, TokenExpired, IncorrectFormatToken, UserNotPresent
+from app.auth.exceptions import MissingToken, UserNotPresent
+from app.auth.utils import validate_token
 from app.core.unit_of_work import UnitOfWork
 from app.user.dependencies import get_user_repository
 from app.user.entities import UserEntity
@@ -24,20 +24,9 @@ async def get_current_user(
         token: str = Depends(get_access_token),
         user_repository: UserRepository = Depends(get_user_repository)
 ) -> UserEntity:
-    try:
-        payload = jwt.decode(
-            token,
-            settings.SECRET_KEY,
-            algorithms=settings.SERVICE_ALGORITHM
-        )
-    except JWTError:
-        raise IncorrectFormatToken()
-    expire = payload.get("exp")
-    if (not expire) or (int(expire) < datetime.now(timezone.utc).timestamp()):
-        raise TokenExpired()
-    user_id = int(payload.get("sub"))
-    if not user_id:
-        raise UserNotPresent()
+
+    user_id = validate_token(token)
+
     user = await user_repository.get(user_id)
     if not user:
         raise UserNotPresent()

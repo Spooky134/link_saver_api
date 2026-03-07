@@ -3,53 +3,60 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
 from app.auth.dependencies import get_current_user
+from app.auth.exceptions import UserNotPresent, PasswordNotMatch, TokenExpired, IncorrectFormatToken
 from app.auth.schemas import UserLogin
 from app.auth.services import AuthService
+from app.auth.utils import validate_token
 from app.config.project_config import settings
 from app.core.dependecies import get_uow
+from app.core.unit_of_work import UnitOfWork
 from app.user.dependencies import get_user_repository
+from app.user.repositories import UserRepository
 
 
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()
+        email=form.get("username")
+        password=form.get("password")
 
-        user_data = UserLogin(
-            email=form.get("username"),
-            password=form.get("password")
-        )
+        if not email or not password:
+            return False
 
-        async for uow in get_uow():
-            user_repo = await get_user_repository(uow)
+        async with UnitOfWork() as uow:
+            user_repo = UserRepository(uow.session)
             auth_service = AuthService(uow, user_repo)
+
             try:
                 access_token = await auth_service.login(
-                    email=str(user_data.email),
-                    password=user_data.password,
+                    email=str(email),
+                    password=str(password)
                 )
-                request.session.update({"token": access_token})
+
+                request.session.update({"access_token": access_token})
                 return True
-            except Exception:
+            except (UserNotPresent, PasswordNotMatch, Exception):
                 return False
-        return False
+
 
     async def logout(self, request: Request) -> bool:
         request.session.clear()
         return True
 
     async def authenticate(self, request: Request):
-        token = request.session.get("token")
+        token = request.session.get("access_token")
         if not token:
-            return RedirectResponse(request.url_for("admin:login"))
+            return False
         try:
             async for uow in get_uow():
-                user_repo = await get_user_repository(uow)
-                user = await get_current_user(token, user_repo)
+                user_repo = UserRepository(uow.session)
+                user_id = validate_token(token)
+                user = await user_repo.get(user_id)
                 if not user:
                     return False
-        except Exception:
-            # Если токен протух — просто гоним на логин, а не падаем в 500
-            return RedirectResponse(request.url_for("admin:login"))
+            return True
+        except (TokenExpired, IncorrectFormatToken, Exception):
+            return False
 
 
 authentication_backend = AdminAuth(secret_key=settings.SECRET_KEY)

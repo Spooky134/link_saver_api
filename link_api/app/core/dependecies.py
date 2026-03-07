@@ -1,7 +1,7 @@
 from typing import AsyncIterator, Annotated
 
-from fastapi.params import Depends, Query
-from pydantic.v1 import BaseModel
+from pydantic import BaseModel
+from fastapi import Depends, Query
 
 from app.core.unit_of_work import UnitOfWork
 

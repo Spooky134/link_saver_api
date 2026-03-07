@@ -15,6 +15,7 @@ from app.root import router as root_router
 from app.user.admin import UserAdmin
 from app.core.exceptions import BaseAppException
 from app.user.routers import router as user_router
+from prometheus_fastapi_instrumentator import Instrumentator, metrics
 
 
 app = FastAPI(
@@ -25,7 +26,7 @@ app = FastAPI(
 
 
 @app.exception_handler(BaseAppException)
-async def app_exception_handler(request: Request, exc: BaseAppException):
+async def app_exception_handler(_, exc: BaseAppException):
     return JSONResponse(
         status_code=exc.status_code,
         content={"detail": exc.detail}
@@ -48,6 +49,12 @@ admin.add_view(UserAdmin)
 admin.add_view(LinkAdmin)
 admin.add_view(CollectionAdmin)
 
+
+instrumentator = Instrumentator(
+    should_group_status_codes=False,
+    excluded_handlers=[".*admin.*", "/metrics"]
+)
+instrumentator.instrument(app).expose(app)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True, host="0.0.0.0", port=8000)

@@ -1,10 +1,8 @@
 import os
-from unittest.mock import patch
 
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 
-from app.auth.utils import create_access_token
 
 os.environ["MODE"] = "TEST"
 

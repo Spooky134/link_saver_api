@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
@@ -21,7 +22,10 @@ from app.user.models import UserModel
 from fastapi.testclient import TestClient
 from httpx import AsyncClient, ASGITransport, Cookies
 from app.main import app as fastapi_app
+from alembic.config import Config
+from alembic import command
 
+BASE_DIR = Path(__file__).resolve().parents[1]
 
 @pytest.fixture(scope="session", autouse=True)
 def init_cache():
@@ -36,8 +40,18 @@ async def prepare_database():
     assert "test" in engine.url.database.lower()
 
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(lambda sync_conn: sync_conn.exec_driver_sql(
+            "DROP SCHEMA public CASCADE"
+        ))
+        await conn.run_sync(lambda sync_conn: sync_conn.exec_driver_sql(
+            "CREATE SCHEMA public"
+        ))
+
+    def run_migrations():
+        alembic_cfg = Config(str(BASE_DIR / "alembic.ini"))
+        command.upgrade(alembic_cfg, "head")
+
+    await asyncio.to_thread(run_migrations)
 
     def open_mock_json(model: str):
         with open(f"tests/mock_data/mock_{model}.json", encoding="utf-8") as f:

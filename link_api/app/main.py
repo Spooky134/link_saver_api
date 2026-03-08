@@ -52,7 +52,7 @@ admin.add_view(CollectionAdmin)
 
 instrumentator = Instrumentator(
     should_group_status_codes=False,
-    excluded_handlers=[".*admin.*", "/metrics"]
+    excluded_handlers=[".*admin.*", "/metrics", "^/v1/root$"]
 )
 instrumentator.instrument(app).expose(app)
 

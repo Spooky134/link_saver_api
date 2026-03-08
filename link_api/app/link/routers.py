@@ -1,15 +1,15 @@
 from typing import List
 
-from fastapi import APIRouter, status, Query
+from fastapi import APIRouter, status, Query, BackgroundTasks
 from app.core.dependecies import PaginationDep
 from app.link.entities import UpdateLinkEntity
-from app.link.schemas import CreateLink, LinkWithCollections, Link, PatchLink
+from app.link.schemas import CreateLink, LinkWithCollections, Link, PatchLink, CreateLinkResponse
 from app.link.dependencies import LinkServiceDep
 from app.link.enums import LinkType
 from app.auth.dependencies import CurrentUserDep
 from fastapi_cache.decorator import cache
 
-
+from app.link.tasks import parse_and_update_link_task
 
 router = APIRouter(prefix="/links", tags=["links"])
 
@@ -30,15 +30,20 @@ async def list_by_type(
     )
 
 
-
-
-@router.post("", response_model=Link, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=CreateLinkResponse, status_code=status.HTTP_201_CREATED)
 async def create_link(
         link: CreateLink,
         service: LinkServiceDep,
-        current_user: CurrentUserDep
+        current_user: CurrentUserDep,
+        bg_tasks: BackgroundTasks
 ):
-    return await service.create_link(current_user.id, str(link.url))
+    link_entity = await service.create_link(current_user.id, str(link.url))
+    bg_tasks.add_task(
+        parse_and_update_link_task,
+        user_id=link_entity.user_id,
+        link_id=link_entity.id
+    )
+    return link_entity
 
 
 @router.get("", response_model=List[Link])

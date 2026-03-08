@@ -1,16 +1,11 @@
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
-from starlette.responses import RedirectResponse
-
-from app.auth.dependencies import get_current_user
 from app.auth.exceptions import UserNotPresent, PasswordNotMatch, TokenExpired, IncorrectFormatToken
-from app.auth.schemas import UserLogin
 from app.auth.services import AuthService
 from app.auth.utils import validate_token
 from app.config.project_config import settings
 from app.core.dependecies import get_uow
 from app.core.unit_of_work import UnitOfWork
-from app.user.dependencies import get_user_repository
 from app.user.repositories import UserRepository
 
 

@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from typing import Optional, Dict
 import asyncio
 import json
-from app.link.entities import CreateLinkEntity
+from app.link.entities import UpdateLinkEntity
 from app.link.enums import LinkType
 
 
@@ -22,7 +22,7 @@ class AsyncLinkInfoParser:
         self._soup = None
         self._og_data = None
 
-    async def fetch(self, url: str) -> CreateLinkEntity:
+    async def fetch(self, url: str) -> UpdateLinkEntity:
         if not url:
             raise ValueError("URL cannot be empty")
         self._url = url
@@ -43,8 +43,7 @@ class AsyncLinkInfoParser:
         except aiohttp.ClientError as e:
             raise Exception(f"Request error: {e}")
         
-        link_entity = CreateLinkEntity(
-            url=self._get_url(),
+        link_entity = UpdateLinkEntity(
             title=self._get_title(),
             description=self._get_description(),
             image_url=self._get_image(),

@@ -112,7 +112,6 @@ class OwnedEntityRepository(EntityRepository[ModelType, EntityType]):
             self.model.user_id == user_id,
             self.model.id == entity_id,
         )
-        logger.info(update_entity)
         if not orm_obj:
             return None
 
@@ -122,3 +121,12 @@ class OwnedEntityRepository(EntityRepository[ModelType, EntityType]):
         )
 
         return self._to_entity(orm_obj)
+
+    async def get(self, user_id: int, entity_id: int) -> Optional[EntityType]:
+        orm_object = await self._get_by_filters(
+            self.model.id == entity_id,
+            self.model.user_id == user_id
+        )
+        if orm_object is None:
+            return None
+        return self._to_entity(orm_object)

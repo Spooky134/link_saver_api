@@ -31,6 +31,13 @@ class Link(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+class CreateLinkResponse(BaseModel):
+    id: int
+    url: HttpUrl
+    link_type: LinkType
+    created_at: datetime
+    updated_at: datetime
+
 
 class LinkWithCollections(Link):
     collections: Optional[List[CollectionInLink]]

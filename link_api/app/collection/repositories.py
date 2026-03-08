@@ -43,14 +43,6 @@ class CollectionRepository(OwnedEntityRepository[CollectionModel, CollectionEnti
             self.model.id == collection_id
         )
 
-    async def get(self, user_id: int, collection_id: int) -> Optional[CollectionEntity]:
-        orm_object = await self._get_by_filters(
-            self.model.id == collection_id,
-            self.model.user_id == user_id
-        )
-        if orm_object is None:
-            return None
-        return self._to_entity(orm_object)
 
     async def add_links(self, user_id: int, collection_id: int, link_ids: Set[int]) -> None:
         if not link_ids:

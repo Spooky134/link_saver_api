@@ -1,4 +1,4 @@
-__all__ = ("broker", )
+__all__ = ("broker",)
 
 from taskiq import TaskiqEvents, TaskiqState
 from taskiq_aio_pika import AioPikaBroker
@@ -11,6 +11,7 @@ logger = logging.get_logger(__name__)
 broker = AioPikaBroker(
     url=str(settings.taskiq.url),
 )
+
 
 @broker.on_event(TaskiqEvents.WORKER_STARTUP)
 async def on_worker_startup(state: TaskiqState) -> None:

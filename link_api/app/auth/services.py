@@ -1,19 +1,29 @@
 from dataclasses import replace
 
-from jose import jwt
 
+from app.auth.exceptions import (
+    InvalidCurrentPassword,
+    PasswordNotMatch,
+    SamePasswordError,
+    UserExistsError,
+    UserNotPresent,
+)
 from app.auth.tasks import send_reset_password_email
+from app.auth.utils import (
+    create_access_token,
+    create_password_reset_token,
+    get_password_hash,
+    validate_reset_password_token,
+    verify_password,
+)
 from app.core.config import settings
-from app.core.unit_of_work import UnitOfWork
-from app.user.repositories import UserRepository
-from app.auth.exceptions import UserExistsError, InvalidCurrentPassword, SamePasswordError
-from app.auth.utils import get_password_hash, verify_password, create_access_token, create_password_reset_token, \
-    validate_reset_password_token
 from app.core.logging import get_logger
-from app.auth.exceptions import PasswordNotMatch, UserNotPresent
+from app.core.unit_of_work import UnitOfWork
 from app.user.entities import CreateUserEntity, UpdateUserEntity
+from app.user.repositories import UserRepository
 
 logger = get_logger(__name__)
+
 
 class AuthService:
     def __init__(self, uow: UnitOfWork, user_repository: UserRepository):
@@ -38,12 +48,12 @@ class AuthService:
         password_is_valid = verify_password(password, user.password)
         if not password_is_valid:
             raise PasswordNotMatch()
-        access_token = create_access_token(
-            {"sub": str(user.id)}
-        )
+        access_token = create_access_token({"sub": str(user.id)})
         return access_token
 
-    async def change_password(self, user_id: int, old_password: str, new_password: str) -> None:
+    async def change_password(
+        self, user_id: int, old_password: str, new_password: str
+    ) -> None:
         user = await self.user_repo.get(user_id)
         if not user:
             raise UserNotPresent()
@@ -52,9 +62,7 @@ class AuthService:
         if verify_password(new_password, user.password):
             raise SamePasswordError()
 
-        updated_user = UpdateUserEntity(
-            password = get_password_hash(new_password)
-        )
+        updated_user = UpdateUserEntity(password=get_password_hash(new_password))
 
         await self.user_repo.update(user_id, updated_user)
         await self.uow.commit()
@@ -73,17 +81,14 @@ class AuthService:
             reset_link=reset_link,
         )
 
-
-    async def reset_password(self, reset_token: str,  new_password: str) -> None:
+    async def reset_password(self, reset_token: str, new_password: str) -> None:
         user_id = validate_reset_password_token(reset_token)
 
         user = await self.user_repo.get(user_id)
         if not user:
             raise UserNotPresent()
 
-        updated_user = UpdateUserEntity(
-            password=get_password_hash(new_password)
-        )
+        updated_user = UpdateUserEntity(password=get_password_hash(new_password))
 
         await self.user_repo.update(user_id, updated_user)
         await self.uow.commit()

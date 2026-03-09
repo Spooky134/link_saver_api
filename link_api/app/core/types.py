@@ -12,4 +12,5 @@ class UnsetType:
     def __bool__(self):
         return False
 
+
 UNSET = UnsetType()

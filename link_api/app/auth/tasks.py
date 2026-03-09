@@ -1,6 +1,6 @@
-from app.core.logging import get_logger
-from app.core import broker
 from app.common.email import send_email
+from app.core import broker
+from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 

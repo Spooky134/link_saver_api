@@ -1,7 +1,8 @@
-from pydantic import BaseModel, AmqpDsn, RedisDsn
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Literal
 from pathlib import Path
+from typing import Literal
+
+from pydantic import AmqpDsn, BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT_DIR = Path(__file__).parent.parent.parent.parent
 ENV_FILE_PATH = ROOT_DIR / ".env"
@@ -21,31 +22,37 @@ class DatabaseConfig(BaseModel):
             f"@{self.host}:{self.port}/{self.db}"
         )
 
+
 class TaskiqConfig(BaseModel):
     url: AmqpDsn
 
+
 class CacheConfig(BaseModel):
     url: str
+
 
 class ServiceConfig(BaseModel):
     name: str
     port: int
     debug: bool
 
+
 class AuthConfig(BaseModel):
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
 
+
 class CorsConfig(BaseModel):
     allowed_origins: list[str]
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=ENV_FILE_PATH if ENV_FILE_PATH.exists() else None,
         env_file_encoding="utf-8",
         extra="ignore",
-        env_nested_delimiter="__"
+        env_nested_delimiter="__",
     )
     FRONTEND_URL: str
 

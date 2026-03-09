@@ -1,7 +1,7 @@
-from typing import AsyncIterator, Annotated
+from typing import Annotated, AsyncIterator
 
-from pydantic import BaseModel
 from fastapi import Depends, Query
+from pydantic import BaseModel
 
 from app.core.unit_of_work import UnitOfWork
 
@@ -14,6 +14,7 @@ async def get_uow() -> AsyncIterator[UnitOfWork]:
 class Pagination(BaseModel):
     skip: int
     limit: int
+
 
 async def get_pagination_params(
     skip: int = Query(0, ge=0),

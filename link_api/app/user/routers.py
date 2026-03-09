@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from app.auth.dependencies import CurrentUserDep
 from app.user.schemas import UserResponse
 

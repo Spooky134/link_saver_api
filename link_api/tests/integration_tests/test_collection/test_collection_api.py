@@ -1,6 +1,6 @@
-from httpx import AsyncClient
-from fastapi import status
 import pytest
+from fastapi import status
+from httpx import AsyncClient
 
 
 @pytest.mark.parametrize("params, expected_count, status_code", [

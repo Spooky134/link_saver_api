@@ -1,7 +1,9 @@
-from sqlalchemy import NullPool
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase
 from typing import AsyncGenerator
+
+from sqlalchemy import NullPool
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
+
 from app.core.config import settings
 
 if settings.MODE == "TEST":
@@ -12,11 +14,10 @@ else:
     DATABASE_PARAMS = {}
 
 
-
 engine = create_async_engine(
     DATABASE_URL,
     # echo=True
-    **DATABASE_PARAMS
+    **DATABASE_PARAMS,
 )
 
 async_session_maker = async_sessionmaker(
@@ -24,8 +25,9 @@ async_session_maker = async_sessionmaker(
     class_=AsyncSession,
     autocommit=False,
     autoflush=False,
-    expire_on_commit=False
+    expire_on_commit=False,
 )
+
 
 class Base(DeclarativeBase):
     repr_cols_num = 3

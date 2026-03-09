@@ -1,7 +1,7 @@
 import logging
 import logging.config
 import sys
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 def setup_logging(level: str = "INFO") -> None:
@@ -49,7 +49,7 @@ def setup_logging(level: str = "INFO") -> None:
         "root": {
             "handlers": ["default"],
             "level": "WARNING",
-        }
+        },
     }
 
     logging.config.dictConfig(logging_config)

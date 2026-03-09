@@ -1,8 +1,9 @@
 from unittest.mock import AsyncMock
 
-from httpx import AsyncClient
-from fastapi import status
 import pytest
+from fastapi import status
+from httpx import AsyncClient
+
 
 @pytest.mark.parametrize("method, url", [
     ("get", "v1/links/1"),
@@ -101,11 +102,16 @@ async def test_patch_link_with_non_existent_id(authenticated_async_client: Async
 
 
 @pytest.mark.parametrize("url, status_code", [
-        ("https://www.youtube.com/watch?v=lBm9_pRj2UA&ab_channel=ScHoolBoyQVEVO", status.HTTP_202_ACCEPTED,),
+        ("https://www.youtube.com/watch?v=lBm9_pRj2UA&ab_channel=ScHoolBoyQVEVO", status.HTTP_202_ACCEPTED),
         ("https://www.youtube.com/watch?v=lBm9_pRj2UA&ab_channel=ScHoolBoyQVEVO", status.HTTP_409_CONFLICT),
         ("not-a-url", status.HTTP_422_UNPROCESSABLE_CONTENT),
     ])
-async def test_create_link(url, status_code, mock_parse_and_update_task: AsyncMock, authenticated_async_client: AsyncClient):
+async def test_create_link(
+        url,
+        status_code,
+        mock_parse_and_update_task: AsyncMock,
+        authenticated_async_client: AsyncClient
+):
     json_body = {
         "url": url,
     }
@@ -136,4 +142,3 @@ async def test_delete_link(authenticated_async_client: AsyncClient):
     response = await authenticated_async_client.get(f"v1/links/{link_id}")
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-

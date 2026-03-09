@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, Union, List
+from typing import List, Optional, Union
 
 from app.collection.entities import CollectionShortEntity
+from app.core.types import UNSET, UnsetType
 from app.link.enums import LinkType
-from app.core.types import UnsetType, UNSET
 
 
 @dataclass(frozen=True)
@@ -19,6 +19,7 @@ class UpdateLinkEntity:
     image_url: Union[str, None, UnsetType] = UNSET
     link_type: Union[LinkType, UnsetType] = UNSET
 
+
 @dataclass(frozen=True)
 class LinkEntity:
     url: str
@@ -31,6 +32,7 @@ class LinkEntity:
     image_url: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
 
 @dataclass(frozen=True)
 class LinkWithCollectionsEntity(LinkEntity):

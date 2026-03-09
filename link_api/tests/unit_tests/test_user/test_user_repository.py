@@ -1,6 +1,8 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.user.repositories import UserRepository
 import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.user.repositories import UserRepository
+
 
 @pytest.mark.parametrize("email, is_present", [
     ("alice.smith@example.com", True),

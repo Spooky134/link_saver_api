@@ -1,15 +1,18 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from contextlib import asynccontextmanager
-from collections.abc import AsyncIterator
 from redis import asyncio as aioredis
-from app.core.logging import setup_logging, get_logger
+
 from app.core import broker
-from app.core.database import engine
 from app.core.config import settings
+from app.core.database import engine
+from app.core.logging import get_logger, setup_logging
 
 logger = get_logger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:

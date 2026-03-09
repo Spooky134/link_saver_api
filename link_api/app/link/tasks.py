@@ -1,12 +1,12 @@
+import app.collection.models
+import app.link.models
+import app.user.models
+from app.core import broker
 from app.core.logging import get_logger
 from app.core.unit_of_work import UnitOfWork
 from app.link.repositories import LinkRepository
 from app.link.utils.async_link_parser import AsyncLinkInfoParser
 from app.link.utils.constants import HEADERS
-from app.core import broker
-import app.link.models
-import app.user.models
-import app.collection.models
 
 logger = get_logger(__name__)
 
@@ -14,9 +14,7 @@ logger = get_logger(__name__)
 @broker.task
 async def parse_and_update_link_task(user_id: int, link_id: int) -> None:
     logger.info(f"Parsing link {link_id} for user {user_id}")
-    link_parser = AsyncLinkInfoParser(
-        headers=HEADERS
-    )
+    link_parser = AsyncLinkInfoParser(headers=HEADERS)
     async with UnitOfWork() as uow:
         link_repo = LinkRepository(uow.session)
         try:

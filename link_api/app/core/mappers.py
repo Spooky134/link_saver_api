@@ -1,6 +1,6 @@
 from typing import Any
-from sqlalchemy import inspect
 
+from sqlalchemy import inspect
 
 
 class BaseMapper:
@@ -9,10 +9,7 @@ class BaseMapper:
         if model is None:
             return {}
 
-        return {
-            c.key: getattr(model, c.key)
-            for c in model.__table__.columns
-        }
+        return {c.key: getattr(model, c.key) for c in model.__table__.columns}
 
     @staticmethod
     def is_loaded(model: Any, field_name: str) -> bool:

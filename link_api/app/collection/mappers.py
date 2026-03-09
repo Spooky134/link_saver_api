@@ -1,5 +1,5 @@
-from app.collection.models import CollectionModel
 from app.collection.entities import CollectionEntity
+from app.collection.models import CollectionModel
 from app.core.mappers import BaseMapper
 
 

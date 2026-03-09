@@ -1,11 +1,13 @@
 import asyncio
 from logging.config import fileConfig
+
 from alembic import context
+
+from app.collection.models import CollectionModel
 from app.core.config import settings
 from app.core.database import Base, engine
-from app.user.models import UserModel
 from app.link.models import LinkModel, link_collection
-from app.collection.models import CollectionModel
+from app.user.models import UserModel
 
 # TODO неправильный url при миграциях
 # this is the Alembic Config object, which provides

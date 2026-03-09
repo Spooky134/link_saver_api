@@ -1,6 +1,12 @@
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
-from app.auth.exceptions import UserNotPresent, PasswordNotMatch, TokenExpired, IncorrectFormatToken
+
+from app.auth.exceptions import (
+    IncorrectFormatToken,
+    PasswordNotMatch,
+    TokenExpired,
+    UserNotPresent,
+)
 from app.auth.services import AuthService
 from app.auth.utils import validate_token
 from app.core.config import settings
@@ -12,8 +18,9 @@ from app.user.repositories import UserRepository
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()
-        email=form.get("username")
-        password=form.get("password")
+
+        email = form.get("username")
+        password = form.get("password")
 
         if not email or not password:
             return False
@@ -24,15 +31,13 @@ class AdminAuth(AuthenticationBackend):
 
             try:
                 access_token = await auth_service.login(
-                    email=str(email),
-                    password=str(password)
+                    email=str(email), password=str(password)
                 )
 
                 request.session.update({"access_token": access_token})
                 return True
             except (UserNotPresent, PasswordNotMatch, Exception):
                 return False
-
 
     async def logout(self, request: Request) -> bool:
         request.session.clear()

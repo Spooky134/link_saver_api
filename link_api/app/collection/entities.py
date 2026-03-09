@@ -15,15 +15,18 @@ class CollectionEntity:
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+
 @dataclass(frozen=True)
 class CreateCollectionEntity:
     name: str
     description: Optional[str] = None
 
+
 @dataclass(frozen=True)
 class UpdateCollectionEntity:
     name: Union[str, None, UnsetType] = UNSET
     description: Union[str, None, UnsetType] = UNSET
+
 
 @dataclass(frozen=True)
 class CollectionShortEntity:

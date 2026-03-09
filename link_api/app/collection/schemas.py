@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field
 from datetime import datetime
-from pydantic import field_validator
-from typing import List, Optional, Set
+from typing import Optional, Set
+
+from pydantic import BaseModel, Field, field_validator
 
 
 class CollectionModifyBase(BaseModel):
@@ -14,14 +14,19 @@ class CollectionModifyBase(BaseModel):
             raise ValueError("Name cannot be empty or contain only spaces")
         return v
 
+
 class CollectionCreate(CollectionModifyBase):
     description: Optional[str] = Field(default=None, min_length=1, max_length=200)
+
 
 class CollectionUpdate(CollectionModifyBase):
     description: Optional[str] = Field(min_length=1, max_length=200)
 
+
 class CollectionPatch(CollectionModifyBase):
-    name: Optional[str] = Field(default=None, min_length=1, max_length=100, description="Name cannot be empty")
+    name: Optional[str] = Field(
+        default=None, min_length=1, max_length=100, description="Name cannot be empty"
+    )
     description: Optional[str] = Field(default=None, min_length=1, max_length=200)
 
 
@@ -32,14 +37,18 @@ class Collection(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+
 class CountLinkInCollection(BaseModel):
     count: int
+
 
 class AddLinksToCollection(BaseModel):
     link_ids: Set[int]
 
+
 class RemoveLinksFromCollection(BaseModel):
     link_ids: Set[int]
+
 
 class PatchLinksInCollection(BaseModel):
     add_ids: Optional[Set[int]] = None

@@ -1,8 +1,10 @@
-import aiohttp
-from bs4 import BeautifulSoup
-from typing import Optional, Dict
 import asyncio
 import json
+from typing import Dict, Optional
+
+import aiohttp
+from bs4 import BeautifulSoup
+
 from app.link.entities import UpdateLinkEntity
 from app.link.enums import LinkType
 from app.link.utils.constants import HEADERS
@@ -23,25 +25,25 @@ class AsyncLinkInfoParser:
         try:
             # TODO иногда ошибка ssl сертификатов
             async with aiohttp.ClientSession(
-                    headers=self._headers,
-                    timeout=self._timeout,
-                    connector=aiohttp.TCPConnector(ssl=False)
+                headers=self._headers,
+                timeout=self._timeout,
+                connector=aiohttp.TCPConnector(ssl=False),
             ) as session:
                 async with session.get(self._url) as response:
                     response.raise_for_status()
                     html = await response.text()
-                    self._soup = BeautifulSoup(html, 'html.parser')
+                    self._soup = BeautifulSoup(html, "html.parser")
                     if not self._soup:
                         raise ValueError("Failed to parse page content")
                     self._parse_og_tags()
         except aiohttp.ClientError as e:
             raise Exception(f"Request error: {e}")
-        
+
         link_entity = UpdateLinkEntity(
             title=self._get_title(),
             description=self._get_description(),
             image_url=self._get_image(),
-            link_type=self._get_link_type()
+            link_type=self._get_link_type(),
         )
         return link_entity
 
@@ -49,21 +51,21 @@ class AsyncLinkInfoParser:
         """Parse Open Graph meta tags."""
         if not self._soup:
             return
-        
-        og_tags = self._soup.find_all('meta', attrs={
-            'property': lambda x: x and x.startswith('og:')
-        })
-        
+
+        og_tags = self._soup.find_all(
+            "meta", attrs={"property": lambda x: x and x.startswith("og:")}
+        )
+
         self._og_data = {
-            tag['property'].strip('og:'): tag['content'] 
-            for tag in og_tags 
-            if 'content' in tag.attrs
+            tag["property"].strip("og:"): tag["content"]
+            for tag in og_tags
+            if "content" in tag.attrs
         }
-    
+
     def _get_url(self) -> str:
         """Get URL"""
         return self._url
-     
+
     def _get_title(self) -> str:
         """Get page title."""
         if self._og_data and "title" in self._og_data:
@@ -76,9 +78,13 @@ class AsyncLinkInfoParser:
         """Get page description."""
         if self._og_data and "description" in self._og_data:
             return self._og_data["description"]
-            
+
         description = self._soup.find("meta", attrs={"name": "description"})
-        return description["content"] if description and "content" in description.attrs else None
+        return (
+            description["content"]
+            if description and "content" in description.attrs
+            else None
+        )
 
     def _get_image(self) -> str:
         """Get preview image URL."""
@@ -94,18 +100,19 @@ class AsyncLinkInfoParser:
         """Normalize link type to predefined values."""
         if not type_str:
             return LinkType.WEBSITE
-        
+
         type_str = type_str.lower()
         for valid_type in LinkType:
             if valid_type.value in type_str:
                 return valid_type
-            
+
         return LinkType.WEBSITE
 
 
 def checker(control_data, data):
     for control_obj, obj in zip(control_data, data):
-        print(control_obj==obj)
+        print(control_obj == obj)
+
 
 async def main():
     data = []
@@ -116,11 +123,11 @@ async def main():
             print(f"|{url}|")
             link_info = await pr.fetch(url)
             data.append(link_info)
-             
-    with open("app/utils/results.json", "w", encoding='utf-8') as f:
+
+    with open("app/utils/results.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-    with open('app/utils/data.json', 'r', encoding='utf-8') as f:
+    with open("app/utils/data.json", "r", encoding="utf-8") as f:
         control_data = json.load(f)
 
     checker(control_data, data)

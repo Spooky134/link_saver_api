@@ -1,12 +1,22 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import Enum, String, DateTime, UniqueConstraint, text
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    Text,
+    UniqueConstraint,
+    text,
+)
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.link.enums import LinkType
-from sqlalchemy import Column, Integer, Table, ForeignKey, Text
 from app.core.database import Base
+from app.link.enums import LinkType
 
 
 class LinkModel(Base):
@@ -18,9 +28,7 @@ class LinkModel(Base):
     description: Mapped[Optional[str]] = mapped_column(Text)
     image_url: Mapped[Optional[str]] = mapped_column(String(1024))
     link_type: Mapped[LinkType] = mapped_column(
-        Enum(LinkType, native_enum=True),
-        default=LinkType.WEBSITE,
-        index=True
+        Enum(LinkType, native_enum=True), default=LinkType.WEBSITE, index=True
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -31,27 +39,31 @@ class LinkModel(Base):
         server_default=text("TIMEZONE('utc', CURRENT_TIMESTAMP)"),
         onupdate=text("TIMEZONE('utc', CURRENT_TIMESTAMP)"),
     )
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("user.id", ondelete="CASCADE"), index=True
+    )
 
     user: Mapped["UserModel"] = relationship(back_populates="links")
     collections: Mapped[list["CollectionModel"]] = relationship(
-        secondary="link_collection",
-        back_populates="links"
+        secondary="link_collection", back_populates="links"
     )
 
-    __table_args__ = (
-        UniqueConstraint("user_id", "url", name="unique_user_link_url"),
-    )
-
+    __table_args__ = (UniqueConstraint("user_id", "url", name="unique_user_link_url"),)
 
     def __str__(self):
         return f"{self.url}"
 
 
-
 link_collection = Table(
-    'link_collection',
+    "link_collection",
     Base.metadata,
-    Column('link_id', Integer,ForeignKey('link.id', ondelete="CASCADE"), primary_key=True),
-    Column('collection_id', Integer,ForeignKey('collection.id', ondelete="CASCADE"),  primary_key=True)
+    Column(
+        "link_id", Integer, ForeignKey("link.id", ondelete="CASCADE"), primary_key=True
+    ),
+    Column(
+        "collection_id",
+        Integer,
+        ForeignKey("collection.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
 )

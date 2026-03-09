@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 router = APIRouter(tags=["root"])
 
+
 @router.get("/root", summary="Root endpoint")
 def root():
     return {
@@ -11,6 +12,6 @@ def root():
         "endpoints": {
             "links": "/api/v1/links",
             "collections": "api/v1/collections",
-            "auth": "/api/v1/auth"
-        }
+            "auth": "/api/v1/auth",
+        },
     }

@@ -47,6 +47,7 @@ class Settings(BaseSettings):
         extra="ignore",
         env_nested_delimiter="__"
     )
+    FRONTEND_URL: str
 
     MODE: Literal["DEV", "TEST", "PROD"]
 

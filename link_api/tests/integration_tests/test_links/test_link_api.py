@@ -101,7 +101,7 @@ async def test_patch_link_with_non_existent_id(authenticated_async_client: Async
 
 
 @pytest.mark.parametrize("url, status_code", [
-        ("https://www.youtube.com/watch?v=lBm9_pRj2UA&ab_channel=ScHoolBoyQVEVO", status.HTTP_201_CREATED,),
+        ("https://www.youtube.com/watch?v=lBm9_pRj2UA&ab_channel=ScHoolBoyQVEVO", status.HTTP_202_ACCEPTED,),
         ("https://www.youtube.com/watch?v=lBm9_pRj2UA&ab_channel=ScHoolBoyQVEVO", status.HTTP_409_CONFLICT),
         ("not-a-url", status.HTTP_422_UNPROCESSABLE_CONTENT),
     ])
@@ -116,7 +116,7 @@ async def test_create_link(url, status_code, mock_parse_and_update_task: AsyncMo
 
     assert response.status_code == status_code
 
-    if status_code == status.HTTP_201_CREATED:
+    if status_code == status.HTTP_202_ACCEPTED:
         result = response.json()
         assert result["url"] == url
 

@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.user.mappers import UserMapper
 from app.user.models import UserModel
-from app.user.entities import UserEntity, CreateUserEntity
+from app.user.entities import UserEntity, CreateUserEntity, UpdateUserEntity
 from app.core.repositories import EntityRepository
 
 
@@ -43,3 +43,17 @@ class UserRepository(EntityRepository[UserModel, UserEntity]):
             return None
 
         return self._to_entity(user_model)
+
+    async def update(self, user_id: int, entity: UpdateUserEntity) -> Optional[UserEntity]:
+        orm_obj = await self._get_by_filters(
+            self.model.id == user_id,
+        )
+        if not orm_obj:
+            return None
+
+        await self._update_model(
+            orm_obj = orm_obj,
+            entity = entity
+        )
+
+        return self._to_entity(orm_obj)

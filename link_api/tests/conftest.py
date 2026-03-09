@@ -31,8 +31,13 @@ def init_cache():
 
 @pytest.fixture
 def mock_parse_and_update_task():
-    with patch("app.link.routers.parse_and_update_link_task.kiq", new_callable=AsyncMock) as mock_task:
-        yield mock_task
+    with patch("app.link.routers.parse_and_update_link_task.kiq", new_callable=AsyncMock) as mock:
+        yield mock
+
+@pytest.fixture
+def mock_send_email():
+    with patch("app.auth.service.send_reset_password_email.kiq", new_callable=AsyncMock) as mock:
+        yield mock
 
 @pytest.fixture(scope="module", autouse=True)
 async def prepare_database():
@@ -121,7 +126,7 @@ async def async_client():
     async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
         yield ac
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 async def authenticated_async_client():
     async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
         await ac.post("/v1/auth/login", json={

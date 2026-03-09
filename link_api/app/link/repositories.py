@@ -8,7 +8,7 @@ from app.link.enums import LinkType
 from app.core.repositories import OwnedEntityRepository
 from app.link.entities import LinkEntity, LinkWithCollectionsEntity
 from app.link.mappers import LinkMapper
-from app.common.mappers import EntityMapper
+from app.link.mappers import EntityMapper
 
 
 class LinkRepository(OwnedEntityRepository[LinkModel, LinkEntity]):

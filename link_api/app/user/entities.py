@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
+
+from app.core.types import UnsetType, UNSET
 
 
 @dataclass(frozen=True)
@@ -15,3 +17,7 @@ class UserEntity:
 class CreateUserEntity:
     email: str
     password: str
+
+@dataclass(frozen=True)
+class UpdateUserEntity:
+    password: Union[str, None, UnsetType] = UNSET

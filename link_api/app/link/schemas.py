@@ -37,7 +37,7 @@ class CreateLinkResponse(BaseModel):
     link_type: LinkType
     created_at: datetime
     updated_at: datetime
-
+    user_id: int
 
 class LinkWithCollections(Link):
     collections: Optional[List[CollectionInLink]]

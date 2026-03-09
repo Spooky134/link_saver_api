@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock
+
 from httpx import AsyncClient
 from fastapi import status
 import pytest
@@ -103,7 +105,7 @@ async def test_patch_link_with_non_existent_id(authenticated_async_client: Async
         ("https://www.youtube.com/watch?v=lBm9_pRj2UA&ab_channel=ScHoolBoyQVEVO", status.HTTP_409_CONFLICT),
         ("not-a-url", status.HTTP_422_UNPROCESSABLE_CONTENT),
     ])
-async def test_create_link(url, status_code, authenticated_async_client: AsyncClient):
+async def test_create_link(url, status_code, mock_parse_and_update_task: AsyncMock, authenticated_async_client: AsyncClient):
     json_body = {
         "url": url,
     }
@@ -118,11 +120,10 @@ async def test_create_link(url, status_code, authenticated_async_client: AsyncCl
         result = response.json()
         assert result["url"] == url
 
-        response = await authenticated_async_client.get(
-            f"v1/links/{result['id']}"
+        mock_parse_and_update_task.assert_awaited_once_with(
+            user_id=result["user_id"],
+            link_id=result["id"]
         )
-
-        assert response.status_code == status.HTTP_200_OK
 
 
 async def test_delete_link(authenticated_async_client: AsyncClient):

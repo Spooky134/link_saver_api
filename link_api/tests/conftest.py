@@ -1,4 +1,6 @@
 import os
+from unittest.mock import patch, AsyncMock
+
 os.environ["MODE"] = "TEST"
 
 
@@ -27,8 +29,12 @@ def init_cache():
     yield
     FastAPICache.reset()
 
+@pytest.fixture
+def mock_parse_and_update_task():
+    with patch("app.link.routers.parse_and_update_link_task.kiq", new_callable=AsyncMock) as mock_task:
+        yield mock_task
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 async def prepare_database():
     assert settings.MODE == "TEST"
     assert "test" in engine.url.database.lower()

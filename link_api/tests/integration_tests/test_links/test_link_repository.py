@@ -5,7 +5,7 @@ from app.link.entities import CreateLinkEntity
 
 
 async def test_add_and_get_link(db_session: AsyncSession):
-    user_id, new_link_id = 1, 11
+    user_id, new_link_id = 1, 10
     link_repo = LinkRepository(db_session)
     create_link = CreateLinkEntity(
         url="https://habr.com/ru/companies/ruvds/articles/416821/",

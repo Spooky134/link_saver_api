@@ -11,13 +11,6 @@ from app.core.types import UnsetType, UNSET
 class CreateLinkEntity:
     url: str
 
-# @dataclass(frozen=True)
-# class CreateLinkEntity:
-#     url: str
-#     link_type: LinkType
-#     title: Optional[str] = None
-#     description: Optional[str] = None
-#     image_url: Optional[str] = None
 
 @dataclass(frozen=True)
 class UpdateLinkEntity:

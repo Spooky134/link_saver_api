@@ -2,13 +2,13 @@ from sqlalchemy import NullPool
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 from typing import AsyncGenerator
-from app.config.project_config import settings
+from app.core.config import settings
 
 if settings.MODE == "TEST":
-    DATABASE_URL = settings.test_db_url
+    DATABASE_URL = settings.test_database.url
     DATABASE_PARAMS = {"poolclass": NullPool}
 else:
-    DATABASE_URL = settings.db_url
+    DATABASE_URL = settings.database.url
     DATABASE_PARAMS = {}
 
 

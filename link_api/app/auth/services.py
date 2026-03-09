@@ -4,7 +4,7 @@ from app.core.unit_of_work import UnitOfWork
 from app.user.repositories import UserRepository
 from app.auth.exceptions import UserExistsError
 from app.auth.utils import get_password_hash, verify_password, create_access_token
-from app.core.logger import get_logger
+from app.core.logging import get_logger
 from app.auth.exceptions import PasswordNotMatch, UserNotPresent
 from app.user.entities import CreateUserEntity
 

@@ -3,11 +3,6 @@ from typing import TypeVar, Generic, Type, List, Optional, Any
 from sqlalchemy import delete, select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.types import UNSET
-from app.core.logger import get_logger
-
-
-logger = get_logger(__name__)
-
 
 
 ModelType = TypeVar("ModelType")
@@ -59,7 +54,6 @@ class BaseRepository(Generic[ModelType, EntityType]):
 
         for key, value in update_data.items():
             if (value is not UNSET) and hasattr(orm_obj, key):
-                logger.info(f"{key}={value}")
                 setattr(orm_obj, key, value)
 
 

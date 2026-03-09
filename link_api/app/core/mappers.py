@@ -1,5 +1,4 @@
-from typing import TypeVar, Generic, Type, Any
-from typing import TypeVar, Generic, Any
+from typing import Any
 from sqlalchemy import inspect
 
 

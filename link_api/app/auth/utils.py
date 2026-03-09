@@ -3,7 +3,7 @@ from jose import jwt, JWTError
 from datetime import datetime, timezone, timedelta
 from app.auth.exceptions import TokenExpired, IncorrectFormatToken
 
-from app.config.project_config import settings
+from app.core.config import settings
 
 
 password_hash = PasswordHash.recommended()
@@ -21,8 +21,8 @@ def create_access_token(data: dict, expire_sec: int = 30) -> str:
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         claims=to_encode,
-        key=settings.SECRET_KEY,
-        algorithm=settings.SERVICE_ALGORITHM
+        key=settings.auth.secret_key,
+        algorithm=settings.auth.algorithm
     )
     return encoded_jwt
 
@@ -30,8 +30,8 @@ def validate_token(token: str) -> int:
     try:
         payload = jwt.decode(
             token,
-            settings.SECRET_KEY,
-            algorithms=settings.SERVICE_ALGORITHM
+            settings.auth.secret_key,
+            algorithms=settings.auth.algorithm
         )
     except JWTError:
         raise IncorrectFormatToken()

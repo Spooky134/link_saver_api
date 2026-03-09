@@ -1,12 +1,12 @@
 import uvicorn
-from fastapi import APIRouter, FastAPI, Request
+from fastapi import APIRouter, FastAPI
 from fastapi.responses import JSONResponse
 from sqladmin import Admin
 from app.admin.auth import authentication_backend
 from app.auth.routers import router as auth_router
 from app.collection.admin import CollectionAdmin
 from app.collection.routers import router as collection_router
-from app.config.project_config import settings
+from app.core.config import settings
 from app.core.database import engine
 from app.core.lifespan import lifespan
 from app.link.admin import LinkAdmin
@@ -15,11 +15,11 @@ from app.root import router as root_router
 from app.user.admin import UserAdmin
 from app.core.exceptions import BaseAppException
 from app.user.routers import router as user_router
-from prometheus_fastapi_instrumentator import Instrumentator, metrics
+from prometheus_fastapi_instrumentator import Instrumentator
 
 
 app = FastAPI(
-    title=settings.SERVICE_NAME,
+    title=settings.service.name,
     lifespan=lifespan,
     root_path="/api"
 )

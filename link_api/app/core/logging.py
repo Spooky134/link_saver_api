@@ -55,3 +55,5 @@ def setup_logging(level: str = "INFO") -> None:
     logging.config.dictConfig(logging_config)
 
 
+def get_logger(name: str) -> logging.Logger:
+    return logging.getLogger(f"app.{name}")

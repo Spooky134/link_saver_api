@@ -3,7 +3,7 @@ from starlette.requests import Request
 from app.auth.exceptions import UserNotPresent, PasswordNotMatch, TokenExpired, IncorrectFormatToken
 from app.auth.services import AuthService
 from app.auth.utils import validate_token
-from app.config.project_config import settings
+from app.core.config import settings
 from app.core.dependecies import get_uow
 from app.core.unit_of_work import UnitOfWork
 from app.user.repositories import UserRepository
@@ -54,4 +54,4 @@ class AdminAuth(AuthenticationBackend):
             return False
 
 
-authentication_backend = AdminAuth(secret_key=settings.SECRET_KEY)
+authentication_backend = AdminAuth(secret_key=settings.auth.secret_key)

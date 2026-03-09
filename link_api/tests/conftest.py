@@ -1,26 +1,20 @@
 import os
-from pathlib import Path
-
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.inmemory import InMemoryBackend
-
-
 os.environ["MODE"] = "TEST"
 
+
+from pathlib import Path
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 import asyncio
 import json
-
 import pytest
 from sqlalchemy import insert, text
-
-from app.core.database import Base, async_session_maker, engine
-from app.config.project_config import settings
+from app.core.database import async_session_maker, engine
+from app.core.config import settings
 from app.link.models import LinkModel, link_collection
 from app.collection.models import CollectionModel
 from app.user.models import UserModel
-
-from fastapi.testclient import TestClient
-from httpx import AsyncClient, ASGITransport, Cookies
+from httpx import AsyncClient, ASGITransport
 from app.main import app as fastapi_app
 from alembic.config import Config
 from alembic import command

@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, Request
 from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 from sqladmin import Admin
@@ -8,21 +8,31 @@ from app.admin.auth import authentication_backend
 from app.auth.routers import router as auth_router
 from app.collection.admin import CollectionAdmin
 from app.collection.routers import router as collection_router
+from app.core import logging
 from app.core.config import settings
 from app.core.database import engine
 from app.core.exceptions import BaseAppException
 from app.core.lifespan import lifespan
+from app.core.logging import setup_logging
 from app.link.admin import LinkAdmin
 from app.link.routers import router as link_router
 from app.root import router as root_router
 from app.user.admin import UserAdmin
 from app.user.routers import router as user_router
 
+
+setup_logging(level=settings.logging.level)
+
+logger = logging.get_logger(__name__)
+
 app = FastAPI(title=settings.service.name, lifespan=lifespan, root_path="/api")
 
-
 @app.exception_handler(BaseAppException)
-async def app_exception_handler(_, exc: BaseAppException):
+async def app_exception_handler(request: Request, exc: BaseAppException):
+    logger.error(
+        f"Unhandled exception in {request.method} {request.url.path}: {str(exc)}",
+        exc_info=True
+    )
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
 

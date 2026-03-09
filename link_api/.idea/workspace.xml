@@ -7,28 +7,12 @@
     <list default="true" id="4e32877e-f260-4c08-a405-dc6523947033" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../alembic.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/auth/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/exceptions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/auth/routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/routers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/auth/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/auth/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/collection/repositories.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/repositories.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/collection/routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/routers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/collection/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/collection/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/collection/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/config/project_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/project_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/dependecies.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/dependecies.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/exceptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docker-compose.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/core/lifespan.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/lifespan.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/link/routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/routers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/link/repositories.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/repositories.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/link/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/link/utils/async_link_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/link/utils/async_link_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/user/exceptions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../requirements.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -39,6 +23,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Dockerfile" />
         <option value="Python Script" />
       </list>
     </option>
@@ -57,6 +42,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests for tests.integration_tests.test_auth.test_auth_api.test_change_password.executor": "Run",
     "Python tests.Python tests for tests.integration_tests.test_auth.test_auth_api.test_login.executor": "Run",
     "Python tests.Python tests for tests.integration_tests.test_auth.test_auth_api.test_logout.executor": "Run",
     "Python tests.Python tests for tests.integration_tests.test_auth.test_auth_api.test_register.executor": "Run",
@@ -85,32 +71,58 @@
     "Python tests.Python tests for tests.integration_tests.test_links.test_link_api.test_patch_link_resource_not_found.executor": "Run",
     "Python tests.Python tests for tests.integration_tests.test_user.test_user_api.test_get_me.executor": "Run",
     "Python tests.Python tests for tests.unit_tests.test_user.test_api.test_register_user.executor": "Run",
+    "Python tests.Python tests in test_auth_api.py.executor": "Run",
     "Python tests.Python tests in test_link_api.py.executor": "Run",
     "Python tests.Python tests in test_user_api.py.executor": "Run",
     "Python tests.Python tests in tests.executor": "Run",
+    "Python tests.pytest for tests.integration_tests.test_auth.test_auth_api.test_register.executor": "Run",
+    "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/andreychvankov/Projects/link_saver_api/link_api/app/link"
+    "last_opened_file_path": "/Users/andreychvankov/Projects/link_saver_api/link_api/app/core"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/link" />
       <recent name="$PROJECT_DIR$/app/core" />
-      <recent name="$PROJECT_DIR$/app/collection" />
       <recent name="$PROJECT_DIR$/app" />
+      <recent name="$PROJECT_DIR$/app/link" />
+      <recent name="$PROJECT_DIR$/app/collection" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/tests/integration_tests/test_user" />
       <recent name="$PROJECT_DIR$/app/schema" />
       <recent name="$PROJECT_DIR$/app/core" />
       <recent name="$PROJECT_DIR$/app" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_link_api.py">
-    <configuration name="Python tests for tests.integration_tests.test_collection.test_collection_api.test_patch_links_in_collection" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.Python tests for tests.integration_tests.test_auth.test_auth_api.test_change_password">
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="link_api" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for tests.integration_tests.test_auth.test_auth_api.test_change_password" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="link_api" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -121,11 +133,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.integration_tests.test_collection.test_collection_api.test_patch_links_in_collection&quot;" />
+      <option name="_new_target" value="&quot;tests.integration_tests.test_auth.test_auth_api.test_change_password&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for tests.integration_tests.test_collection.test_collection_api.test_patch_links_in_collection_negative" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for tests.integration_tests.test_links.test_link_api.test_access_other_user_link" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="link_api" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -136,22 +148,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.integration_tests.test_collection.test_collection_api.test_patch_links_in_collection_negative&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for tests.integration_tests.test_links.test_link_api.test_get_link" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="link_api" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.integration_tests.test_links.test_link_api.test_get_link&quot;" />
+      <option name="_new_target" value="&quot;tests.integration_tests.test_links.test_link_api.test_access_other_user_link&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -170,28 +167,30 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests in tests" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest for tests.integration_tests.test_auth.test_auth_api.test_register" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="link_api" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/link-api-WLzvj28t-py3.13/bin/python3.13" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;tests.integration_tests.test_auth.test_auth_api.test_register&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for tests.integration_tests.test_auth.test_auth_api.test_change_password" />
         <item itemvalue="Python tests.Python tests in test_link_api.py" />
-        <item itemvalue="Python tests.Python tests for tests.integration_tests.test_links.test_link_api.test_get_link" />
-        <item itemvalue="Python tests.Python tests for tests.integration_tests.test_collection.test_collection_api.test_patch_links_in_collection_negative" />
-        <item itemvalue="Python tests.Python tests for tests.integration_tests.test_collection.test_collection_api.test_patch_links_in_collection" />
-        <item itemvalue="Python tests.Python tests in tests" />
+        <item itemvalue="Python tests.Python tests for tests.integration_tests.test_links.test_link_api.test_access_other_user_link" />
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python tests.pytest for tests.integration_tests.test_auth.test_auth_api.test_register" />
       </list>
     </recent_temporary>
   </component>

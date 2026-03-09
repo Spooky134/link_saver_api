@@ -16,8 +16,6 @@ logger = get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    setup_logging()
-
     redis = aioredis.from_url(settings.cache.url)
     FastAPICache.init(RedisBackend(redis), prefix="cache")
     if not broker.is_worker_process:

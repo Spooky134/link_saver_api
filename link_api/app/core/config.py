@@ -47,6 +47,9 @@ class CorsConfig(BaseModel):
     allowed_origins: list[str]
 
 
+class LoggingConfig(BaseModel):
+    level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=ENV_FILE_PATH if ENV_FILE_PATH.exists() else None,
@@ -58,6 +61,7 @@ class Settings(BaseSettings):
 
     MODE: Literal["DEV", "TEST", "PROD"]
 
+    logging: LoggingConfig
     cors: CorsConfig
     auth: AuthConfig
     service: ServiceConfig

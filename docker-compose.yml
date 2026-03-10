@@ -1,0 +1,142 @@
+services:
+  api:
+    container_name: link_api
+    build: ./link_api
+    depends_on:
+      queue: 
+        condition: service_healthy
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    env_file:
+      - .env
+    command: [./start.sh]
+    ports:
+      - "8000:8000"
+    networks:
+      - app_network
+    volumes:
+      - ./link_api:/app 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/root"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+  worker:
+    container_name: link_api_worker
+    build: ./link_api
+    depends_on:
+      queue: 
+        condition: service_healthy
+      database:
+        condition: service_healthy
+    env_file:
+      - .env
+    command: taskiq worker app.core.taskiq_broker:broker --fs-discover --workers 1
+    networks:
+      - app_network
+    volumes:
+      - ./link_api:/app 
+    restart: unless-stopped
+  database:
+    container_name: link_api_database
+    image: postgres:18-alpine
+    env_file:
+      - .env
+    environment:
+    - POSTGRES_USER=${DATABASE__USER}
+    - POSTGRES_PASSWORD=${DATABASE__PASSWORD}
+    - POSTGRES_DB=${DATABASE__DB}
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    networks:
+      - app_network
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE__USER} -d ${DATABASE__DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s 
+    restart: unless-stopped
+
+  cache:
+    container_name: link_api_cache
+    image: redis:8.6-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    expose:
+      - "6379"
+    networks:
+      - app_network
+    volumes:
+      - cache_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  queue:
+    container_name: link_api_rabbitmq
+    image: rabbitmq:3-management-alpine
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app_network
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  prometheus:
+    container_name: link_api_prometheus
+    image: prom/prometheus:v3
+    ports: 
+      - "9090:9090"
+    networks:
+      - app_network
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    
+  grafana:
+    container_name: link_api_grafana
+    image: grafana/grafana:12.3
+    ports: 
+      - "3000:3000"
+    networks:
+      - app_network
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+  
+
+volumes:
+  database_data:
+  cache_data:
+  grafana_data:
+  prometheus_data:
+  rabbitmq_data:
+  
+
+networks:
+  app_network:
+    driver: bridge

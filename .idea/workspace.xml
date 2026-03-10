@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="53f3735d-c2d8-4c20-8d34-82e9feae0d80" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alembic.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alembic/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alembic/env.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alembic/script.py.mako" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/nginx.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/link_api/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/api/dependencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/link_api/app/api/dependencies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/api/routers/auth.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/api/schemas/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/link_api/app/api/schemas/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/config/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/link_api/app/config/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/config/migrations.py" beforeDir="false" afterPath="$PROJECT_DIR$/link_api/app/config/migrations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/config/project_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/link_api/app/config/project_config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/db/models/user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/db/repositories/user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/link_api/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/services/auth.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/link_api/app/services/link.py" beforeDir="false" afterPath="$PROJECT_DIR$/link_api/app/services/link.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="39Trpy6oSyQVc6HDXc0pU5KjQ2U" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-ce6832f46686-7b97d883f26b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.25557.178" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="53f3735d-c2d8-4c20-8d34-82e9feae0d80" name="Changes" comment="" />
+      <created>1770731088115</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770731088115</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/link_api/app/db/repositories/link.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

@@ -26,6 +26,5 @@ async def parse_and_update_link_task(user_id: int, link_id: int) -> None:
             parsed_link = await link_parser.fetch(link.url)
 
             await link_repo.update(user_id, link_id, parsed_link)
-            await uow.commit()
         except Exception as e:
             logger.error(e)

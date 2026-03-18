@@ -15,7 +15,7 @@ from app.core.exceptions import BaseAppException
 from app.core.lifespan import lifespan
 from app.core.logging import setup_logging
 from app.link.admin import LinkAdmin
-from app.link.routers import router as link_router
+from app.link.routes import router as link_router
 from app.root import router as root_router
 from app.user.admin import UserAdmin
 from app.user.routes import router as user_router

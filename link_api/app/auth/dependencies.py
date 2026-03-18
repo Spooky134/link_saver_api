@@ -34,11 +34,11 @@ async def get_current_user(
 
 async def get_auth_service(
     uow: UnitOfWork = Depends(get_uow),
-    user_repository: UserRepository = Depends(get_user_repository),
 ) -> AuthService:
-    return AuthService(uow=uow, user_repository=user_repository)
+    user_repo = UserRepository(uow.session)
+    return AuthService(user_repository=user_repo)
 
 
-AuthServiceDep: type[AuthService] = Annotated[AuthService, Depends(get_auth_service)]
+AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
 
-CurrentUserDep: type[UserEntity] = Annotated[UserEntity, Depends(get_current_user)]
+CurrentUserDep = Annotated[UserEntity, Depends(get_current_user)]

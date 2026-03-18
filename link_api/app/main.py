@@ -5,9 +5,9 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from sqladmin import Admin
 
 from app.admin.auth import authentication_backend
-from app.auth.routers import router as auth_router
+from app.auth.routes import router as auth_router
 from app.collection.admin import CollectionAdmin
-from app.collection.routers import router as collection_router
+from app.collection.routes import router as collection_router
 from app.core import logging
 from app.core.config import settings
 from app.core.database import engine
@@ -18,7 +18,7 @@ from app.link.admin import LinkAdmin
 from app.link.routers import router as link_router
 from app.root import router as root_router
 from app.user.admin import UserAdmin
-from app.user.routers import router as user_router
+from app.user.routes import router as user_router
 
 
 setup_logging(level=settings.logging.level)

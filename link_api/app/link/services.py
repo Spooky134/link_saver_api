@@ -1,6 +1,5 @@
 from app.core import logging
 from app.core.exceptions import NotFoundError, ObjectAlreadyExists
-from app.core.unit_of_work import UnitOfWork
 from app.link.entities import (
     CreateLinkEntity,
     LinkEntity,
@@ -14,8 +13,7 @@ from app.link.repositories import LinkRepository
 logger = logging.get_logger(__name__)
 
 class LinkService:
-    def __init__(self, uow: UnitOfWork, link_repository: LinkRepository):
-        self.uow = uow
+    def __init__(self, link_repository: LinkRepository):
         self.link_repo = link_repository
 
     async def create_link(self, user_id: int, link_url: str) -> LinkEntity:
@@ -26,7 +24,6 @@ class LinkService:
         create_link_entity = CreateLinkEntity(link_url)
         created_link = await self.link_repo.add(user_id, create_link_entity)
 
-        await self.uow.commit()
         logger.info(f"Link created: id={created_link.id}, user_id={user_id}")
         return created_link
 
@@ -37,7 +34,6 @@ class LinkService:
         if updated_link is None:
             logger.warning(f"Update failed: Link not found. id={link_id}, user_id={user_id}")
             raise NotFoundError(detail="Link not found")
-        await self.uow.commit()
         logger.info(f"Link updated: id={link_id}, user_id={user_id}")
         return updated_link
 
@@ -46,7 +42,6 @@ class LinkService:
         if not deleted:
             logger.warning(f"Delete failed: Link not found. id={link_id}, user_id={user_id}")
             raise NotFoundError(detail="Link not found")
-        await self.uow.commit()
         logger.info(f"Link deleted: id={link_id}, user_id={user_id}")
 
     async def get_link(self, user_id: int, link_id: int) -> LinkWithCollectionsEntity:

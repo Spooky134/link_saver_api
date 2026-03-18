@@ -9,7 +9,7 @@ from app.core.database import Base, engine
 from app.link.models import LinkModel, link_collection
 from app.user.models import UserModel
 
-# TODO неправильный url при миграциях
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

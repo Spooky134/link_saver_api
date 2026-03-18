@@ -34,7 +34,9 @@ async def list_by_type(
 
 
 @router.post(
-    "", response_model=CreateLinkResponse, status_code=status.HTTP_202_ACCEPTED
+    "",
+    response_model=CreateLinkResponse,
+    status_code=status.HTTP_202_ACCEPTED
 )
 async def create_link(
     link: CreateLink,

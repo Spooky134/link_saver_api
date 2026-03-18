@@ -16,11 +16,9 @@ from app.link.repositories import LinkRepository
 class CollectionService:
     def __init__(
         self,
-        uow: UnitOfWork,
         collection_repository: CollectionRepository,
         link_repository: LinkRepository,
     ):
-        self.uow = uow
         self.collection_repo = collection_repository
         self.link_repo = link_repository
 
@@ -31,7 +29,6 @@ class CollectionService:
             raise ObjectAlreadyExists(detail="Collection with this name already exists")
 
         created_collection = await self.collection_repo.add(user_id, collection_entity)
-        await self.uow.commit()
         return created_collection
 
     async def update_collection(
@@ -51,7 +48,6 @@ class CollectionService:
         )
         if updated_collection is None:
             raise NotFoundError(detail="Collection not found")
-        await self.uow.commit()
         return updated_collection
 
     async def get_collection(
@@ -72,7 +68,6 @@ class CollectionService:
         deleted = await self.collection_repo.delete(user_id, collection_id)
         if not deleted:
             raise NotFoundError(detail="Collection not found")
-        await self.uow.commit()
 
     async def list_links(
         self, user_id: int, collection_id: int, skip: int = 0, limit: int = 10
@@ -100,7 +95,6 @@ class CollectionService:
         if remove_ids:
             await self.collection_repo.remove_links(user_id, collection_id, remove_ids)
 
-        await self.uow.commit()
 
     async def links_count(self, user_id: int, collection_id: int) -> int:
         count = await self.collection_repo.count_links(user_id, collection_id)

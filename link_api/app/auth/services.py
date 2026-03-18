@@ -26,8 +26,7 @@ logger = get_logger(__name__)
 
 
 class AuthService:
-    def __init__(self, uow: UnitOfWork, user_repository: UserRepository):
-        self.uow = uow
+    def __init__(self, user_repository: UserRepository):
         self.user_repo = user_repository
 
     async def register(self, user_register: CreateUserEntity) -> None:
@@ -39,7 +38,6 @@ class AuthService:
         new_user = replace(user_register, password=hashed_password)
 
         await self.user_repo.add(new_user)
-        await self.uow.commit()
 
     async def login(self, email: str, password: str) -> str:
         user = await self.user_repo.get_by_email(email)
@@ -65,7 +63,6 @@ class AuthService:
         updated_user = UpdateUserEntity(password=get_password_hash(new_password))
 
         await self.user_repo.update(user_id, updated_user)
-        await self.uow.commit()
 
     async def request_password_reset(self, email: str) -> None:
         user = await self.user_repo.get_by_email(email)
@@ -91,4 +88,3 @@ class AuthService:
         updated_user = UpdateUserEntity(password=get_password_hash(new_password))
 
         await self.user_repo.update(user_id, updated_user)
-        await self.uow.commit()

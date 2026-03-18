@@ -27,7 +27,7 @@ class AdminAuth(AuthenticationBackend):
 
         async with UnitOfWork() as uow:
             user_repo = UserRepository(uow.session)
-            auth_service = AuthService(uow, user_repo)
+            auth_service = AuthService(user_repo)
 
             try:
                 access_token = await auth_service.login(

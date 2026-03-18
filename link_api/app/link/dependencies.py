@@ -8,18 +8,8 @@ from app.link.repositories import LinkRepository
 from app.link.services import LinkService
 
 
-async def get_link_repository(uow: UnitOfWork = Depends(get_uow)) -> LinkRepository:
-    return LinkRepository(uow.session)
+async def get_link_service(uow: UnitOfWork = Depends(get_uow)) -> LinkService:
+    link_repo = LinkRepository(uow.session)
+    return LinkService(link_repo)
 
-
-async def get_link_service(
-    uow: UnitOfWork = Depends(get_uow),
-    link_repository: LinkRepository = Depends(get_link_repository),
-) -> LinkService:
-    return LinkService(
-        uow=uow,
-        link_repository=link_repository,
-    )
-
-
-LinkServiceDep: type[LinkService] = Annotated[LinkService, Depends(get_link_service)]
+LinkServiceDep = Annotated[LinkService, Depends(get_link_service)]

@@ -9,9 +9,7 @@ class LinkMapper(BaseMapper):
     def to_link(cls, model: LinkModel) -> LinkEntity:
         data = cls.model_to_dict(model)
         return LinkEntity(**data)
-
-
-class EntityMapper(BaseMapper):
+    
     @classmethod
     def to_link_with_collections(cls, model: LinkModel) -> LinkWithCollectionsEntity:
         data = cls.model_to_dict(model)
@@ -23,3 +21,4 @@ class EntityMapper(BaseMapper):
         )
 
         return LinkWithCollectionsEntity(**data)
+

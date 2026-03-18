@@ -8,7 +8,7 @@ from app.core import logging
 from app.core.repositories import OwnedEntityRepository
 from app.link.entities import LinkEntity, LinkWithCollectionsEntity
 from app.link.enums import LinkType
-from app.link.mappers import EntityMapper, LinkMapper
+from app.link.mappers import LinkMapper
 from app.link.models import LinkModel, link_collection
 
 logger = logging.get_logger(__name__)
@@ -40,7 +40,7 @@ class LinkRepository(OwnedEntityRepository[LinkModel, LinkEntity]):
         if link is None:
             logger.debug(f"Link id={link_id} not found in DB")
             return None
-        return EntityMapper.to_link_with_collections(link)
+        return LinkMapper.to_link_with_collections(link)
 
     async def list_by_collection(
         self, user_id: int, collection_id: int, offset: int = 0, limit: int = 10

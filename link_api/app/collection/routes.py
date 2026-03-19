@@ -128,6 +128,7 @@ async def patch_links_in_collection(
     service: CollectionServiceDep,
     current_user: CurrentUserDep,
 ):
-    await service.update_links(
-        current_user.id, collection_id, patch_links.add_ids, patch_links.remove_ids
-    )
+    if patch_links.add_ids:
+        await service.attach_links(current_user.id, collection_id, list(patch_links.add_ids))
+    if patch_links.remove_ids:
+        await service.remove_links(current_user.id, collection_id, list(patch_links.remove_ids))

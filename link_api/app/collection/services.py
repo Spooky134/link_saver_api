@@ -8,7 +8,6 @@ from app.collection.entities import (
 from app.collection.repositories import CollectionRepository
 from app.core.exceptions import NotFoundError, ObjectAlreadyExists
 from app.core.types import UNSET
-from app.core.unit_of_work import UnitOfWork
 from app.link.entities import LinkEntity
 from app.link.repositories import LinkRepository
 
@@ -50,6 +49,7 @@ class CollectionService:
             raise NotFoundError(detail="Collection not found")
         return updated_collection
 
+
     async def get_collection(
         self, user_id: int, collection_id: int
     ) -> CollectionEntity:
@@ -59,15 +59,18 @@ class CollectionService:
 
         return collection
 
+
     async def list_collections(
         self, user_id: int, skip: int = 0, limit: int = 10
     ) -> List[CollectionEntity]:
         return await self.collection_repo.list(user_id, skip, limit)
 
+
     async def delete_collection(self, user_id: int, collection_id: int) -> None:
         deleted = await self.collection_repo.delete(user_id, collection_id)
         if not deleted:
             raise NotFoundError(detail="Collection not found")
+
 
     async def list_links(
         self, user_id: int, collection_id: int, skip: int = 0, limit: int = 10
@@ -83,17 +86,21 @@ class CollectionService:
 
         return links
 
-    async def update_links(
-        self, user_id: int, collection_id: int, add_ids: Set[int], remove_ids: Set[int]
-    ) -> None:
+
+    async def attach_links(self, user_id: int, collection_id: int, link_ids: List[int]) -> None:
         exists = await self.collection_repo.exists(user_id, collection_id)
         if not exists:
             raise NotFoundError(detail="Collection not found")
 
-        if add_ids:
-            await self.collection_repo.add_links(user_id, collection_id, add_ids)
-        if remove_ids:
-            await self.collection_repo.remove_links(user_id, collection_id, remove_ids)
+        await self.collection_repo.attach_links(user_id, collection_id, link_ids)
+
+
+    async def remove_links(self, user_id: int, collection_id: int, links_ids: List[int]) -> None:
+        exists = await self.collection_repo.exists(user_id, collection_id)
+        if not exists:
+            raise NotFoundError(detail="Collection not found")
+        
+        await self.collection_repo.remove_links(user_id, collection_id, links_ids)
 
 
     async def links_count(self, user_id: int, collection_id: int) -> int:
@@ -102,6 +109,7 @@ class CollectionService:
             raise NotFoundError(detail="Collection not found")
 
         return count
+
 
     async def search_by_name(
         self, user_id: int, query_string: str, skip: int = 0, limit: int = 10

@@ -33,7 +33,7 @@ def init_cache():
 
 @pytest.fixture
 def mock_parse_and_update_task():
-    with patch("app.link.routers.parse_and_update_link_task.kiq", new_callable=AsyncMock) as mock:
+    with patch("app.link.routes.parse_and_update_link_task.kiq", new_callable=AsyncMock) as mock:
         yield mock
 
 @pytest.fixture

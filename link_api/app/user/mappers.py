@@ -5,6 +5,6 @@ from app.user.models import UserModel
 
 class UserMapper(BaseMapper):
     @classmethod
-    def to_user(cls, model: UserModel) -> UserEntity:
+    def to_entity(cls, model: UserModel) -> UserEntity:
         data = cls.model_to_dict(model)
         return UserEntity(**data)

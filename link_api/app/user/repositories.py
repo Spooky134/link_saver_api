@@ -3,51 +3,55 @@ from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.repositories import EntityRepository
+from app.core.repositories import BaseRepository
+from app.core.types import UNSET
 from app.user.entities import CreateUserEntity, UpdateUserEntity, UserEntity
 from app.user.mappers import UserMapper
 from app.user.models import UserModel
 
 
-class UserRepository(EntityRepository[UserModel, UserEntity]):
-    def __init__(self, async_session: AsyncSession):
-        super().__init__(model=UserModel, async_session=async_session)
-
-    def _to_entity(self, orm_obj: UserModel) -> UserEntity:
-        return UserMapper.to_user(orm_obj)
+class UserRepository(BaseRepository):
+    def __init__(self, db_session: AsyncSession):
+        super().__init__(model=UserModel, db_session=db_session)
 
     async def get_by_email(self, email: str) -> Optional[UserEntity]:
-        user = await self._get_by_filters(self.model.email == email)
-        if not user:
+        user_orm = await self._get_by_filters(self._model.email == email)
+        if not user_orm:
             return None
-        return self._to_entity(user)
+        return UserMapper.to_entity(user_orm)
 
     async def add(self, entity: CreateUserEntity) -> UserEntity:
         payload = asdict(entity)
-        orm_obj = self.model(**payload)
+        user_orm = self._model(**payload)
 
-        self._async_session.add(orm_obj)
-        await self._async_session.flush()
-        await self._async_session.refresh(orm_obj)
+        self._db_session.add(user_orm)
+        await self._db_session.flush()
+        await self._db_session.refresh(user_orm)
 
-        return self._to_entity(orm_obj)
+        return UserMapper.to_entity(user_orm)
 
-    async def get(self, entity_id: int) -> Optional[UserEntity]:
-        user_model = await self._get_by_filters(self.model.id == entity_id)
-        if not user_model:
+    async def get(self, user_id: int) -> Optional[UserEntity]:
+        user_orm = await self._get_by_filters(self._model.id == user_id)
+        if not user_orm:
             return None
 
-        return self._to_entity(user_model)
+        return UserMapper.to_entity(user_orm)
 
-    async def update(
-        self, user_id: int, entity: UpdateUserEntity
-    ) -> Optional[UserEntity]:
-        orm_obj = await self._get_by_filters(
-            self.model.id == user_id,
+    async def update(self, user_id: int, entity: UpdateUserEntity) -> Optional[UserEntity]:
+        user_orm = await self._get_by_filters(
+            self._model.id == user_id,
         )
-        if not orm_obj:
+        if not user_orm:
             return None
 
-        await self._update_model(orm_obj=orm_obj, entity=entity)
+        update_data = asdict(entity)
+        update_data = {
+            key: value for key, value in update_data.items()
+            if value is not UNSET
+        }
 
-        return self._to_entity(orm_obj)
+        await self._update(user_orm, update_data)
+
+        return UserMapper.to_entity(user_orm)
+
+

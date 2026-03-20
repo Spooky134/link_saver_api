@@ -1,7 +1,8 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Annotated, List, Optional
+from annotated_types import MinLen, MaxLen
 
-from pydantic import BaseModel, Field, HttpUrl, field_serializer
+from pydantic import BaseModel, ConfigDict, HttpUrl, field_serializer
 
 from app.link.enums import LinkType
 
@@ -12,16 +13,14 @@ class CollectionInLink(BaseModel):
 
 
 class CreateLink(BaseModel):
-    url: HttpUrl = Field(examples=["https://example.com"])
+    url: Annotated[HttpUrl, "https://example.com"]
 
 
 class PatchLink(BaseModel):
-    title: Optional[str] = Field(default=None, min_length=1, max_length=100)
-    description: Optional[str] = Field(default=None, min_length=1, max_length=400)
-    image_url: Optional[HttpUrl] = Field(
-        default=None, examples=["https://example.com/images/picture.jpg"]
-    )
-    link_type: Optional[LinkType] = Field(default=None)
+    title: Annotated[Optional[str], MinLen(1), MaxLen(100)] = None
+    description: Annotated[Optional[str], MinLen(1), MaxLen(400)] = None
+    link_type: Optional[LinkType] = None
+    image_url: Annotated[Optional[HttpUrl], "https://example.com/images/picture.jpg"] = None
 
     @field_serializer("image_url")
     def serialize_image(self, v):

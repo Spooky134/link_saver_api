@@ -71,6 +71,7 @@ async def patch_link(
     link_id: int, link: PatchLink, service: LinkServiceDep, current_user: CurrentUserDep
 ):
     update_link = UpdateLinkEntity(**link.model_dump(exclude_unset=True))
+    print(type(update_link.image_url))
     return await service.update_link(current_user.id, link_id, update_link)
 
 

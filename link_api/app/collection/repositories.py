@@ -31,9 +31,9 @@ class CollectionRepository(BaseRepository):
         return CollectionMapper.to_entity(orm_obj)
 
 
-    async def delete(self, user_id: int, entity_id: int) -> bool:
+    async def delete(self, user_id: int, collection_id: int) -> bool:
         return await self._delete_by_filters(
-            self._model.id == entity_id, self._model.user_id == user_id
+            self._model.id == collection_id, self._model.user_id == user_id
         )
 
 
@@ -45,10 +45,10 @@ class CollectionRepository(BaseRepository):
         return CollectionMapper.to_entities(orm_objects)
 
 
-    async def update(self, user_id: int, entity_id: int, entity: UpdateCollectionEntity) -> Optional[CollectionEntity]:
+    async def update(self, user_id: int, collection_id: int, entity: UpdateCollectionEntity) -> Optional[CollectionEntity]:
         orm_obj = await self._get_by_filters(
             self._model.user_id == user_id,
-            self._model.id == entity_id,
+            self._model.id == collection_id,
         )
         if not orm_obj:
             return None
@@ -63,9 +63,9 @@ class CollectionRepository(BaseRepository):
         return CollectionMapper.to_entity(orm_obj)
 
 
-    async def get(self, user_id: int, entity_id: int) -> Optional[CollectionEntity]:
+    async def get(self, user_id: int, collection_id: int) -> Optional[CollectionEntity]:
         orm_object = await self._get_by_filters(
-            self._model.id == entity_id, self._model.user_id == user_id
+            self._model.id == collection_id, self._model.user_id == user_id
         )
         if orm_object is None:
             return None
